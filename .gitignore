@@ -1,0 +1,33 @@
+# Internal & Course-Private Documents
+private/
+*.tmp
+*.bak
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Dependencies & Build Outputs (Persiapan Week 6 & 9: React/NestJS)
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+out/
+
+# Log Files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# OS & Editor Files
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIRA — AI Virtual Companion Platform (Inspired by AIRI)</title>
+</head>
+<body>
+
+  <!-- Top Application Bar: Menggunakan elemen semantik <header> dan <nav> -->
+  <header>
+    <h1>AIRA</h1>
+    <p>AI Virtual Companion &bull; Interactive 3D VRM &amp; Live2D Stage Platform</p>
+
+    <!-- Informasi Status Global Sistem -->
+    <aside aria-label="Status Sistem">
+      <p>
+        <span>Status Sistem: <strong>Siap (Online)</strong></span> &bull; 
+        <span>Model AI: <strong>Google Gemini Direct / Local Ollama</strong></span> &bull; 
+        <span>Avatar Engine: <strong>Three.js VRM 3D</strong></span>
+      </p>
+    </aside>
+
+    <nav aria-label="Navigasi Utama Portal">
+      <ul>
+        <li><a href="index.html" aria-current="page">Home (Portal)</a></li>
+        <li><a href="chat.html">Live Stage &amp; Chat</a></li>
+        <li><a href="character.html">Studio &amp; Settings (AIRI Card)</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <hr>
+
+  <main>
+
+    <!-- Hero Section: Stage Launchpad -->
+    <section aria-labelledby="hero-heading">
+      <h2 id="hero-heading">Panggung Virtual Companion Pribadi Anda</h2>
+      
+      <figure>
+        <img src="../public/images/avatar-sample-a.png" alt="Avatar 3D VRM AIRA dengan rambut pirang kuncir dua, jaket kasual, dan ekspresi ceria menyapa pengguna" width="300" height="380">
+        <figcaption>
+          <strong>AIRA (Model Aktif: AvatarSample_A.vrm)</strong> — Pendamping virtual 3D interaktif yang hidup di browser Anda.
+        </figcaption>
+      </figure>
+
+      <p>
+        AIRA adalah pendamping digital interaktif berbasis kecerdasan buatan yang mengadopsi arsitektur <em>Stage Web</em> ala Project AIRI. Menghadirkan karakter 3D berbasis <strong>VRM</strong> dan <strong>Live2D</strong> di tengah layar, didukung percakapan multibahasa, suara alami (TTS), serta bank memori jangka panjang.
+      </p>
+
+      <p>
+        <a href="chat.html"><strong>&rarr; Buka Panggung Interaktif (Live Stage) Sekarang &larr;</strong></a>
+      </p>
+    </section>
+
+    <hr>
+
+    <!-- Form Pencarian & Filter Cepat (Memenuhi elemen Form di Halaman Utama) -->
+    <section aria-labelledby="search-heading">
+      <h2 id="search-heading">Cari Karakter &amp; Sesi Obrolan</h2>
+      <form action="#" method="get">
+        <fieldset>
+          <legend>Filter Penelusuran Portal</legend>
+          
+          <p>
+            <label for="portal-search-query">Kata Kunci:</label>
+            <input type="search" id="portal-search-query" name="query" placeholder="Cari topik obrolan atau model..." size="35">
+          </p>
+
+          <p>
+            <label for="portal-filter-format">Format Model:</label>
+            <select id="portal-filter-format" name="format">
+              <option value="all">Semua Format (VRM &amp; Live2D)</option>
+              <option value="vrm">3D VRM Humanoid (.vrm)</option>
+              <option value="live2d">Live2D Cubism (.model3.json)</option>
+            </select>
+
+            <label for="portal-filter-status">Status Sesi:</label>
+            <select id="portal-filter-status" name="status">
+              <option value="all">Semua Sesi</option>
+              <option value="active">Sesi Aktif</option>
+              <option value="archived">Diarsipkan</option>
+            </select>
+          </p>
+
+          <p>
+            <button type="submit">Terapkan Filter</button>
+            <button type="reset">Reset</button>
+          </p>
+        </fieldset>
+      </form>
+    </section>
+
+    <hr>
+
+    <!-- Showcase Kartu Karakter (AIRI-Card Concept) -->
+    <section aria-labelledby="card-heading">
+      <h2 id="card-heading">Koleksi Karakter &amp; Model Avatar (AIRI Cards)</h2>
+      <p>
+        AIRA mendukung model avatar 3D standar terbuka (VRM) dan Live2D Cubism yang dapat ditukar kapan saja:
+      </p>
+
+      <article>
+        <h3>1. AIRA — Persona Utama (VRM Sample A)</h3>
+        <figure>
+          <img src="../public/images/avatar-sample-a.png" alt="Model 3D VRM Avatar Sample A tampak depan dengan rambut pirang" width="160" height="200">
+          <figcaption>Format: <code>AvatarSample_A.vrm</code> (Humanoid 3D)</figcaption>
+        </figure>
+        <p><strong>Karakteristik:</strong> Ceria, energetik, suportif, gemar membantu belajar coding dan mendengarkan keluh kesah harian.</p>
+        <p><a href="chat.html">Pilih Avatar Ini di Stage &rarr;</a></p>
+      </article>
+
+      <article>
+        <h3>2. AIRA — Gaya Kasual Berjaket (VRM Sample B)</h3>
+        <figure>
+          <img src="../public/images/avatar-sample-b.png" alt="Model 3D VRM Avatar Sample B gaya kasual rambut pendek berhoodie abu-abu" width="160" height="200">
+          <figcaption>Format: <code>AvatarSample_B.vrm</code> (Humanoid 3D)</figcaption>
+        </figure>
+        <p><strong>Karakteristik:</strong> Santai, tenang, gaya bahasa lebih kasual, cocok untuk teman santai sambil memutar musik lofi.</p>
+        <p><a href="character.html#scene-config">Konfigurasi di Studio &rarr;</a></p>
+      </article>
+
+      <article>
+        <h3>3. AIRA — Edisi Klasik 2D (Hiyori Live2D)</h3>
+        <figure>
+          <img src="../public/images/hiyori-preview.png" alt="Model Live2D Hiyori dengan seragam sekolah Jepang berambut cokelat" width="160" height="200">
+          <figcaption>Format: <code>Hiyori.model3.json</code> (Live2D Cubism)</figcaption>
+        </figure>
+        <p><strong>Karakteristik:</strong> Klasik 2D anime girl, ekspresi wajah dinamis, dan gerakan nafas alami.</p>
+        <p><a href="character.html#scene-config">Konfigurasi di Studio &rarr;</a></p>
+      </article>
+    </section>
+
+    <hr>
+
+    <!-- Modul Sistem (Diadaptasi dari Modul AIRI) -->
+    <section aria-labelledby="modules-heading">
+      <h2 id="modules-heading">Modul &amp; Kapabilitas Sistem (Mengacu ke Arsitektur AIRI)</h2>
+
+      <article>
+        <h3>1. Stage Renderer (WebGL / Three.js VRM &amp; Live2D)</h3>
+        <p>
+          Merender model 3D VRM menggunakan Three.js dan <code>@pixiv/three-vrm</code>. Dilengkapi fisika rambut, kedipan mata otomatis (<em>auto-blink</em>), dan pelacakan kursor mouse (<em>eye/head tracking</em>).
+        </p>
+      </article>
+
+      <article>
+        <h3>2. Modul Suara &amp; Pendengaran (Speech TTS &amp; Hearing STT)</h3>
+        <p>
+          Integrasi suara alami menggunakan Kokoro TTS dan Edge-TTS untuk berbicara secara realistis, serta Web Speech API / Whisper untuk mendengarkan suara pengguna melalui mikrofon.
+        </p>
+      </article>
+
+      <article>
+        <h3>3. Modul Memori Jangka Panjang (Long-Term Memory Alaya)</h3>
+        <p>
+          Sistem mencatat fakta-fakta spesifik pengguna (seperti nama panggilan, hobi, dan jadwal kuliah) ke dalam database untuk diinjeksikan kembali saat merespon obrolan.
+        </p>
+      </article>
+
+      <article>
+        <h3>4. Penglihatan Komputer &amp; Multimodal (Vision Input)</h3>
+        <p>
+          Dukungan pengiriman gambar tangkapan layar atau foto agar AIRA dapat menganalisis gambar dan memberikan respon visual secara kontekstual.
+        </p>
+      </article>
+    </section>
+
+    <hr>
+
+    <!-- Riwayat Sesi Percakapan Aktif (Data Tabular Semantik) -->
+    <section aria-labelledby="sessions-heading">
+      <h2 id="sessions-heading">Sesi Obrolan Terkini</h2>
+      
+      <table border="1">
+        <caption>Daftar Sesi Percakapan yang Pernah Dilakukan Pengguna</caption>
+        <thead>
+          <tr>
+            <th scope="col">Topik Sesi</th>
+            <th scope="col">Model Avatar</th>
+            <th scope="col">Pesan Terakhir</th>
+            <th scope="col">Memori Terkait</th>
+            <th scope="col">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Diskusi Proyek Web &amp; HTML</th>
+            <td>AvatarSample_A.vrm</td>
+            <td>"Semangat ya! Struktur semantik HTML-nya sudah rapi banget ✨"</td>
+            <td>Tugas semester mata kuliah Web Pekan 2</td>
+            <td><a href="chat.html">Lanjutkan di Stage &rarr;</a></td>
+          </tr>
+          <tr>
+            <th scope="row">Ngobrol Santai &amp; Hobi</th>
+            <td>AvatarSample_A.vrm</td>
+            <td>"Nanti kita tonton anime favoritmu bareng ya!"</td>
+            <td>Pengguna suka Detective Conan</td>
+            <td><a href="chat.html">Lanjutkan di Stage &rarr;</a></td>
+          </tr>
+          <tr>
+            <th scope="row">Uji Coba Model 3D Kasual</th>
+            <td>AvatarSample_B.vrm</td>
+            <td>"Gimana tampilanku dengan jaket baru ini?"</td>
+            <td>Eksperimen model VRM alternatif</td>
+            <td><a href="chat.html">Lanjutkan di Stage &rarr;</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr>
+
+    <!-- Akses Cepat ke Menu Lain -->
+    <section aria-labelledby="quick-links-heading">
+      <h2 id="quick-links-heading">Navigasi Cepat</h2>
+      <ul>
+        <li><a href="chat.html">Masuk ke Ruang Panggung &amp; Obrolan (Live Stage)</a></li>
+        <li><a href="character.html#scene-config">Kustomisasi Model VRM &amp; Latar Belakang Panggung</a></li>
+        <li><a href="character.html#persona-config">Edit Persona Karakter (AIRI Card Definition)</a></li>
+        <li><a href="character.html#memory-vault">Inspeksi Bank Memori Jangka Panjang</a></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <hr>
+
+  <footer>
+    <p>&copy; 2026 AIRA Project &bull; Dikembangkan oleh Kaisar Rayfa (Terinspirasi dari Arsitektur Project AIRI).</p>
+  </footer>
+
+</body>
+</html>
