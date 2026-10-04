@@ -14,9 +14,9 @@ The focus for Week 2 is establishing semantic structure, tag completeness, and b
 
 | Page | File | Description |
 | :--- | :--- | :--- |
-| **Portal / Home** | `src/index.html` | Landing page introducing the companion platform, launchpad section, search and filter form, avatar model cards (VRM & Live2D), and a table of recent chat sessions. |
-| **Live Stage** | `src/chat.html` | Detail interface for character interaction. Includes a canvas container for 3D model rendering, quick stage controls (camera angles, backgrounds, lighting), live session metrics table, conversation message history, and a multimodal input form. |
-| **Studio & Settings** | `src/character.html` | Configuration and data management page. Contains technical persona specifications, avatar and scene motion settings, character system prompt editor, AI provider/audio options, and a long-term memory vault with a manual entry form. |
+| **Live Stage** | `src/index.html` | Primary interactive stage modeled after AIRI. Features the central character stage (Hiyori Live2D), floating dark-teal chat drawer with message bubbles and input bar, corner telemetry table, and camera controls. |
+| **Studio & Settings** | `src/settings.html` | Settings hub inspired by AIRI's settings list. Contains configuration cards for character persona (AIRA Card), models (VRM/Live2D), long-term memory vault table, LLM provider options, and system toggles. |
+| **Sign In** | `src/login.html` | Minimalist centered authentication interface modeled after AIRI's sign-in flow. Includes email input, social login buttons, terms notice, and account benefits comparison table. |
 
 ### Technical & Accessibility Compliance
 * **Semantic HTML5:** Built using standard landmark elements (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<figure>`, `<figcaption>`, and `<footer>`) rather than nested generic containers.
@@ -26,22 +26,45 @@ The focus for Week 2 is establishing semantic structure, tag completeness, and b
 
 ---
 
-## Screenshots (Week 2 — Pure HTML)
+## Week 3 — Native CSS & Responsive Milestone
 
-Rendered directly from the unstyled HTML files:
+Building upon the semantic HTML structure from Week 2, Week 3 introduces an external stylesheet (`src/style.css`) implementing pure native CSS (no frameworks). The design is faithfully modeled after [Project AIRI](https://github.com/moeru-ai/airi) (`airi.moeru.ai`), creating an immersive virtual companion stage.
 
-### 1. Home Portal (`src/index.html`)
-![Home Portal HTML Preview](docs/screenshots/index.png)
+### Styling & Implementation Highlights
+* **Visual Identity & Palette:** Sampled directly from AIRI's interface—featuring a dark canvas (`#141618`) with a subtle teal dot grid (`rgba(14, 75, 95, 0.35)`), a deep teal header (`#06475d`), and translucent glassmorphic card surfaces (`rgba(12, 42, 53, 0.92)`).
+* **Organic Scallop Wave Header:** The top header features a custom repeating scallop wave silhouette along its bottom border, framing the stage seamlessly.
+* **Immersive Character Stage:** The character model (Hiyori Live2D) is positioned directly on the stage canvas without bounding boxes, grounded naturally towards the bottom.
+* **Glassmorphic Floating Chat Drawer:** Positioned on the right side with transparent dialogue bubbles, distinguishing AIRA's responses (deep teal card) from user messages (dark charcoal pill on the right), complete with a circular cyan send button and attachment controls.
+* **Corner Widgets:** Telemetry metrics and stage controls are packaged into compact collapsible widgets (`<details>`) at the corners, keeping the center stage clear while preserving full tabular and form requirements.
+* **Responsive Design (`@media` queries):** 
+  - **Desktop:** Full dual-panel layout with central character stage and right-hand floating chat drawer.
+  - **Mobile ($\le 768\text{px}$):** Layout layar penuh responsif ala *companion app*, di mana karakter berdiri terpusat, navbar persegi panjang minimalis dengan pemilih sesi obrolan native dan akses akun, serta panel percakapan melayang rapi di bagian bawah.
 
 ---
 
-### 2. Live Stage & Chat (`src/chat.html`)
-![Live Stage HTML Preview](docs/screenshots/chat.png)
+## Screenshots (Desktop & Mobile Previews)
+
+### 1. Live Stage (`src/index.html`)
+
+| Desktop View (1568 &times; 882) | Mobile View (390 &times; 844) |
+| :---: | :---: |
+| ![Live Stage Desktop](docs/screenshots/index.png) | ![Live Stage Mobile](docs/screenshots/index-mobile.png) |
 
 ---
 
-### 3. Studio & Settings (`src/character.html`)
-![Studio and Settings HTML Preview](docs/screenshots/character.png)
+### 2. Studio & Settings (`src/settings.html`)
+
+| Desktop View | Mobile View |
+| :---: | :---: |
+| ![Settings Desktop](docs/screenshots/settings.png) | ![Settings Mobile](docs/screenshots/settings-mobile.png) |
+
+---
+
+### 3. Sign In (`src/login.html`)
+
+| Desktop View | Mobile View |
+| :---: | :---: |
+| ![Sign In Desktop](docs/screenshots/login.png) | ![Sign In Mobile](docs/screenshots/login-mobile.png) |
 
 ---
 
@@ -51,20 +74,23 @@ Rendered directly from the unstyled HTML files:
 aira/
 ├── README.md                  # Project documentation and roadmap
 ├── docs/
-│   └── screenshots/           # Weekly progress screenshots
-│       ├── index.png          # Index page preview
-│       ├── chat.png           # Chat stage preview
-│       └── character.png      # Studio page preview
+│   └── screenshots/           # Weekly progress screenshots (desktop & mobile)
+│       ├── index.png          # Live stage desktop preview
+│       ├── index-mobile.png   # Live stage mobile preview
+│       ├── settings.png       # Settings hub desktop preview
+│       ├── settings-mobile.png # Settings hub mobile preview
+│       ├── login.png          # Sign in desktop preview
+│       └── login-mobile.png   # Sign in mobile preview
 ├── public/                    # Static assets
-│   ├── images/                # Character and model thumbnails
+│   ├── images/                # Character models and thumbnails (Hiyori, Avatars)
 │   └── models/
 │       └── vrm/               # 3D model files (AvatarSample_A.vrm)
-└── src/                       # Source HTML files (Week 2)
-    ├── index.html             # Main portal page
-    ├── chat.html              # Live stage and dialogue page
-    └── character.html         # Character configuration and memory vault
+└── src/                       # Source files
+    ├── style.css              # External stylesheet (Week 3 native CSS)
+    ├── index.html             # Live stage page (Home)
+    ├── settings.html          # Studio & Settings page
+    └── login.html             # Authentication & Sign in page
 ```
-
 ---
 
 ## Getting Started
@@ -96,13 +122,15 @@ Official course syllabus roadmap (School of Computing, Telkom University):
 - [x] Screenshots documentation (`docs/screenshots/`)
 
 ### Week 3 — CSS
-- [ ] Basic styling and color palette
-- [ ] Layout architecture (Flexbox & CSS Grid)
-- [ ] Typography
-- [ ] Chat bubble interface
-- [ ] Centered character stage
-- [ ] Responsive design basics
-
+- [x] External stylesheet (`src/style.css`) linked across all pages
+- [x] Color palette & visual identity faithfully inspired by AIRI
+- [x] Typography hierarchy and font properties
+- [x] Customized lists and navigation pill buttons
+- [x] Text alignment and glassmorphic card containers
+- [x] Chat bubble interface (AIRA card vs user pill)
+- [x] Seamless centered character stage
+- [x] Responsive layout with `@media` queries (desktop & mobile views)
+- [x] Desktop & mobile screenshots documentation (`docs/screenshots/`)
 ### Week 4 — Bootstrap + Tailwind
 - [ ] Bootstrap component exploration
 - [ ] Tailwind CSS integration
