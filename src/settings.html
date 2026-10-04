@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengaturan — AIRA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigasi Atas -->
+  <header class="navbar">
+    <div class="navbar-left">
+      <a href="index.html" class="logo">
+        <span class="logo-text">AIRA</span>
+      </a>
+    </div>
+
+    <div class="navbar-actions">
+      <a href="index.html" class="back-link">&larr; Kembali ke Panggung</a>
+    </div>
+  </header>
+
+  <!-- Konten Utama Halaman Pengaturan -->
+  <main class="settings-container">
+
+    <!-- Header Judul Pengaturan -->
+    <div class="settings-title-bar">
+      <a href="index.html" class="back-arrow" title="Kembali ke Panggung">&lsaquo;</a>
+      <h1>Pengaturan Karakter &amp; Tampilan</h1>
+    </div>
+
+    <!-- Daftar Modul Pengaturan -->
+    <div class="settings-list">
+
+      <!-- 1. Profil & Persona Karakter -->
+      <section class="settings-card" id="card-settings" aria-labelledby="heading-card">
+        <div class="card-summary">
+          <div class="card-text">
+            <h2 id="heading-card">Profil Karakter</h2>
+            <p>Atur nama, sapaan awal, dan deskripsi kepribadian karakter AIRA.</p>
+          </div>
+        </div>
+
+        <form action="#" method="post" class="settings-form">
+          <div class="form-group">
+            <label for="char-name">Nama Karakter:</label>
+            <input type="text" id="char-name" name="name" value="AIRA" required>
+          </div>
+
+          <div class="form-group">
+            <label for="char-greeting">Sapaan Pertama:</label>
+            <textarea id="char-greeting" name="greeting" rows="2">Halo! Selamat datang di AIRA. Hari ini kamu lagi fokus ngerjain tugas apa nih?</textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="char-prompt">Deskripsi Sifat &amp; Gaya Bahasa:</label>
+            <textarea id="char-prompt" name="system_prompt" rows="3">AIRA adalah karakter pendamping virtual yang ramah, santun, dan suportif. Menggunakan bahasa Indonesia yang komunikatif dan santai untuk menemani sesi belajar.</textarea>
+          </div>
+
+          <button type="submit" class="save-btn">Simpan Profil Karakter</button>
+        </form>
+      </section>
+
+      <!-- 2. Model Visual Karakter -->
+      <section class="settings-card" id="model-settings" aria-labelledby="heading-models">
+        <div class="card-summary">
+          <div class="card-text">
+            <h2 id="heading-models">Model Visual</h2>
+            <p>Pilih atau ganti tampilan visual karakter untuk panggung utama.</p>
+          </div>
+        </div>
+
+        <form action="#" method="post" class="settings-form" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="model-preset">Model Karakter Aktif:</label>
+            <select id="model-preset" name="model_preset">
+              <option value="hiyori" selected>Hiyori (Tampilan Standar - Seragam)</option>
+              <option value="avatar_a">Model Alternatif A (Kasual)</option>
+              <option value="avatar_b">Model Alternatif B (Hoodie)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="custom-model">Unggah Gambar / Model Baru (.png / .vrm):</label>
+            <input type="file" id="custom-model" name="custom_file" accept=".png,.vrm,.jpg">
+          </div>
+
+          <button type="submit" class="save-btn">Terapkan Model</button>
+        </form>
+      </section>
+
+      <!-- 3. Catatan Memori Pengguna (Data Tabular) -->
+      <section class="settings-card" id="memory-settings" aria-labelledby="heading-memory">
+        <div class="card-summary">
+          <div class="card-text">
+            <h2 id="heading-memory">Catatan Memori</h2>
+            <p>Daftar catatan dan preferensi pengguna yang diingat oleh karakter.</p>
+          </div>
+        </div>
+
+        <!-- Tabel Catatan Memori -->
+        <table class="settings-table">
+          <thead>
+            <tr>
+              <th scope="col">Kode</th>
+              <th scope="col">Kategori</th>
+              <th scope="col">Fakta yang Diingat</th>
+              <th scope="col">Prioritas</th>
+              <th scope="col">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">MEM-01</th>
+              <td>Identitas</td>
+              <td>Nama pengguna adalah Kaisar.</td>
+              <td>Utama</td>
+              <td><a href="#del-1">Hapus</a></td>
+            </tr>
+            <tr>
+              <th scope="row">MEM-02</th>
+              <td>Minat</td>
+              <td>Menyukai serial detektif dan membaca komik.</td>
+              <td>Sedang</td>
+              <td><a href="#del-2">Hapus</a></td>
+            </tr>
+            <tr>
+              <th scope="row">MEM-03</th>
+              <td>Kuliah</td>
+              <td>Sedang mengerjakan tugas praktikum pemrograman web.</td>
+              <td>Penting</td>
+              <td><a href="#del-3">Hapus</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Form Tambah Catatan Baru -->
+        <form action="#" method="post" class="settings-form">
+          <fieldset>
+            <legend>Tambah Catatan Baru</legend>
+            <div class="form-group">
+              <label for="new-mem-cat">Kategori Catatan:</label>
+              <select id="new-mem-cat" name="category">
+                <option value="identitas">Identitas &amp; Profil</option>
+                <option value="hobi">Hobi &amp; Minat</option>
+                <option value="kuliah">Aktivitas Kuliah</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="new-mem-text">Informasi / Fakta Baru:</label>
+              <textarea id="new-mem-text" name="fact" rows="2" placeholder="Tuliskan informasi penting baru tentang pengguna..." required></textarea>
+            </div>
+
+            <button type="submit" class="save-btn">+ Tambah Catatan</button>
+          </fieldset>
+        </form>
+      </section>
+
+      <!-- 4. Pengaturan Respon Obrolan -->
+      <section class="settings-card" id="provider-settings" aria-labelledby="heading-providers">
+        <div class="card-summary">
+          <div class="card-text">
+            <h2 id="heading-providers">Pengaturan Obrolan</h2>
+            <p>Pilihan mode balasan percakapan dan tingkat variasi respon.</p>
+          </div>
+        </div>
+
+        <form action="#" method="post" class="settings-form">
+          <div class="form-group">
+            <label for="llm-provider">Mode Respon Karakter:</label>
+            <select id="llm-provider" name="provider">
+              <option value="lokal" selected>Mode Percakapan Standar</option>
+              <option value="belajar">Mode Tanya Jawab Tugas Web</option>
+              <option value="santai">Mode Obrolan Santai</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="llm-temp">Tingkat Variasi Respon (Ekspresif):</label>
+            <input type="range" id="llm-temp" name="temperature" min="0" max="100" value="70">
+          </div>
+
+          <button type="submit" class="save-btn">Simpan Pengaturan Obrolan</button>
+        </form>
+      </section>
+
+      <!-- 5. Preferensi Tampilan & Interaksi -->
+      <section class="settings-card" id="system-settings" aria-labelledby="heading-system">
+        <div class="card-summary">
+          <div class="card-text">
+            <h2 id="heading-system">Preferensi Tampilan</h2>
+            <p>Pengaturan visual dan animasi pada panggung antarmuka web.</p>
+          </div>
+        </div>
+
+        <form action="#" method="post" class="settings-form">
+          <div class="form-group checkbox-group">
+            <input type="checkbox" id="auto-blink" name="auto_blink" checked>
+            <label for="auto-blink">Aktifkan efek animasi halus pada panggung</label>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <input type="checkbox" id="sound-effect" name="sound_effect" checked>
+            <label for="sound-effect">Bunyikan nada ringan saat pesan terkirim</label>
+          </div>
+
+          <button type="submit" class="save-btn">Simpan Preferensi</button>
+        </form>
+      </section>
+
+    </div>
+
+  </main>
+
+</body>
+</html>

@@ -3,233 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIRA — AI Virtual Companion Platform (Inspired by AIRI)</title>
+  <title>AIRA — AI Virtual Companion</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Top Application Bar: Menggunakan elemen semantik <header> dan <nav> -->
-  <header>
-    <h1>AIRA</h1>
-    <p>AI Virtual Companion &bull; Interactive 3D VRM &amp; Live2D Stage Platform</p>
+  <!-- Navigasi Atas (Navbar) -->
+  <header class="navbar">
+    <div class="navbar-left">
+      <a href="index.html" class="logo">
+        <span class="logo-text">AIRA</span>
+      </a>
+      <!-- Dropdown Obrolan Baru Khusus Mobile (Murni HTML, Default Value Seperti Desktop) -->
+      <form action="#" method="get" class="mobile-session-form">
+        <label for="mobile-session" class="sr-only">Pilih Sesi Obrolan</label>
+        <select id="mobile-session" name="session" class="mobile-session-select" title="Pilih Obrolan">
+          <option value="1" selected>Obrolan Baru</option>
+          <option value="2">Tugas Pemrograman Web</option>
+          <option value="3">Diskusi Santai</option>
+        </select>
+      </form>
+    </div>
 
-    <!-- Informasi Status Global Sistem -->
-    <aside aria-label="Status Sistem">
-      <p>
-        <span>Status Sistem: <strong>Siap (Online)</strong></span> &bull; 
-        <span>Model AI: <strong>Google Gemini Direct / Local Ollama</strong></span> &bull; 
-        <span>Avatar Engine: <strong>Three.js VRM 3D</strong></span>
-      </p>
-    </aside>
+    <div class="navbar-actions">
+      <!-- Pilihan Mode Balasan -->
+      <form action="#" method="get" class="model-form">
+        <label for="ai-model" class="sr-only">Pilih Mode Karakter:</label>
+        <select id="ai-model" name="model" class="model-select">
+          <option value="standar" selected>Mode Standar</option>
+          <option value="interaktif">Mode Interaktif</option>
+          <option value="hemat">Mode Ringan</option>
+        </select>
+      </form>
 
-    <nav aria-label="Navigasi Utama Portal">
-      <ul>
-        <li><a href="index.html" aria-current="page">Home (Portal)</a></li>
-        <li><a href="chat.html">Live Stage &amp; Chat</a></li>
-        <li><a href="character.html">Studio &amp; Settings (AIRI Card)</a></li>
-      </ul>
-    </nav>
+      <!-- Tombol Pintas Menu Pengaturan dan Akun -->
+      <a href="settings.html" class="action-btn" title="Buka Pengaturan" aria-label="Buka Pengaturan">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </a>
+
+      <a href="login.html" class="action-btn user-btn" title="Masuk Akun" aria-label="Masuk Akun">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </a>
+    </div>
   </header>
 
-  <hr>
+  <!-- Panggung Utama Interaktif -->
+  <main class="stage-container">
 
-  <main>
-
-    <!-- Hero Section: Stage Launchpad -->
-    <section aria-labelledby="hero-heading">
-      <h2 id="hero-heading">Panggung Virtual Companion Pribadi Anda</h2>
-      
-      <figure>
-        <img src="../public/images/avatar-sample-a.png" alt="Avatar 3D VRM AIRA dengan rambut pirang kuncir dua, jaket kasual, dan ekspresi ceria menyapa pengguna" width="300" height="380">
-        <figcaption>
-          <strong>AIRA (Model Aktif: AvatarSample_A.vrm)</strong> — Pendamping virtual 3D interaktif yang hidup di browser Anda.
-        </figcaption>
+    <!-- Area Karakter di Tengah Layar -->
+    <section class="character-area" aria-label="Panggung Karakter">
+      <figure class="character-figure">
+        <img
+          src="../public/images/hiyori-preview.png"
+          alt="Karakter AIRA tersenyum ramah menyapa di tengah panggung"
+          class="character-image"
+          width="480"
+          height="650"
+        >
+        <figcaption class="sr-only">AIRA - Karakter Pendamping Virtual</figcaption>
       </figure>
 
-      <p>
-        AIRA adalah pendamping digital interaktif berbasis kecerdasan buatan yang mengadopsi arsitektur <em>Stage Web</em> ala Project AIRI. Menghadirkan karakter 3D berbasis <strong>VRM</strong> dan <strong>Live2D</strong> di tengah layar, didukung percakapan multibahasa, suara alami (TTS), serta bank memori jangka panjang.
-      </p>
+      <!-- Widget Sudut Kiri Atas: Status Karakter -->
+      <aside class="corner-widget telemetry-widget" aria-label="Status Karakter">
+        <details>
+          <summary>Status Karakter</summary>
+          <table class="data-table">
+            <caption>Informasi Karakter Aktif</caption>
+            <thead>
+              <tr>
+                <th scope="col">Informasi</th>
+                <th scope="col">Keterangan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Karakter</th>
+                <td>AIRA (Hiyori)</td>
+              </tr>
+              <tr>
+                <th scope="row">Suasana Hati</th>
+                <td>Ceria (Cheerful)</td>
+              </tr>
+              <tr>
+                <th scope="row">Mode Panggung</th>
+                <td>Web Companion</td>
+              </tr>
+              <tr>
+                <th scope="row">Respon Suara</th>
+                <td>Aktif</td>
+              </tr>
+            </tbody>
+          </table>
+        </details>
+      </aside>
 
-      <p>
-        <a href="chat.html"><strong>&rarr; Buka Panggung Interaktif (Live Stage) Sekarang &larr;</strong></a>
-      </p>
+      <!-- Widget Sudut Kiri Bawah: Atur Tampilan -->
+      <aside class="corner-widget controls-widget" aria-label="Pengaturan Tampilan">
+        <details>
+          <summary>Atur Tampilan</summary>
+          <form action="#" method="post" class="widget-form">
+            <fieldset>
+              <legend>Sudut Tampilan Karakter</legend>
+              <label for="cam-full">
+                <input type="radio" id="cam-full" name="cam" value="full"> Seluruh Badan
+              </label>
+              <label for="cam-waist">
+                <input type="radio" id="cam-waist" name="cam" value="waist" checked> Setengah Badan
+              </label>
+              <label for="cam-close">
+                <input type="radio" id="cam-close" name="cam" value="close"> Wajah
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Kecerahan Panggung</legend>
+              <label for="stage-light" class="sr-only">Tingkat Kecerahan</label>
+              <input type="range" id="stage-light" name="light" min="0" max="100" value="80">
+            </fieldset>
+          </form>
+        </details>
+      </aside>
     </section>
 
-    <hr>
+    <!-- Panel Obrolan Sisi Kanan -->
+    <aside class="chat-panel" aria-label="Panel Percakapan">
 
-    <!-- Form Pencarian & Filter Cepat (Memenuhi elemen Form di Halaman Utama) -->
-    <section aria-labelledby="search-heading">
-      <h2 id="search-heading">Cari Karakter &amp; Sesi Obrolan</h2>
-      <form action="#" method="get">
-        <fieldset>
-          <legend>Filter Penelusuran Portal</legend>
-          
-          <p>
-            <label for="portal-search-query">Kata Kunci:</label>
-            <input type="search" id="portal-search-query" name="query" placeholder="Cari topik obrolan atau model..." size="35">
-          </p>
+      <!-- Header Obrolan -->
+      <div class="chat-header">
+        <div class="chat-session-select">
+          <label for="session-dropdown" class="sr-only">Pilih Topik Obrolan</label>
+          <select id="session-dropdown" name="session">
+            <option value="1" selected>Obrolan Baru</option>
+            <option value="2">Tugas Pemrograman Web</option>
+            <option value="3">Diskusi Santai</option>
+          </select>
+        </div>
 
-          <p>
-            <label for="portal-filter-format">Format Model:</label>
-            <select id="portal-filter-format" name="format">
-              <option value="all">Semua Format (VRM &amp; Live2D)</option>
-              <option value="vrm">3D VRM Humanoid (.vrm)</option>
-              <option value="live2d">Live2D Cubism (.model3.json)</option>
-            </select>
+        <button type="button" class="icon-toggle-btn" title="Bungkam Suara" aria-label="Bungkam Suara">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          </svg>
+        </button>
+      </div>
 
-            <label for="portal-filter-status">Status Sesi:</label>
-            <select id="portal-filter-status" name="status">
-              <option value="all">Semua Sesi</option>
-              <option value="active">Sesi Aktif</option>
-              <option value="archived">Diarsipkan</option>
-            </select>
-          </p>
+      <!-- Riwayat Balon Percakapan -->
+      <section class="chat-messages" aria-label="Daftar Pesan">
+        <!-- Balon Chat Pembuka AIRA -->
+        <article class="message-bubble ai-message">
+          <header class="message-header">
+            <img src="../public/images/hiyori-preview.png" alt="Foto profil AIRA" class="avatar-mini">
+            <strong>AIRA</strong> &bull; <time datetime="14:00">14:00</time>
+          </header>
+          <p>Halo! Selamat datang di AIRA. Hari ini kamu lagi fokus ngerjain tugas apa nih?</p>
+        </article>
 
-          <p>
-            <button type="submit">Terapkan Filter</button>
-            <button type="reset">Reset</button>
-          </p>
-        </fieldset>
-      </form>
-    </section>
+        <!-- Balon Chat Pengguna -->
+        <article class="message-bubble user-message">
+          <header class="message-header">
+            <strong>Kamu</strong> &bull; <time datetime="14:01">14:01</time>
+          </header>
+          <p>Halo AIRA! Hari ini aku lagi ngerjain tugas kuliah pemrograman web, merapikan tampilan CSS.</p>
+        </article>
 
-    <hr>
+        <!-- Balon Balasan AIRA -->
+        <article class="message-bubble ai-message">
+          <header class="message-header">
+            <img src="../public/images/hiyori-preview.png" alt="Foto profil AIRA" class="avatar-mini">
+            <strong>AIRA</strong> &bull; <time datetime="14:02">14:02</time>
+          </header>
+          <p>Keren! Semangat ya. Tampilannya sekarang jadi lebih nyaman dan serasi di panggung ini!</p>
+        </article>
+      </section>
 
-    <!-- Showcase Kartu Karakter (AIRI-Card Concept) -->
-    <section aria-labelledby="card-heading">
-      <h2 id="card-heading">Koleksi Karakter &amp; Model Avatar (AIRI Cards)</h2>
-      <p>
-        AIRA mendukung model avatar 3D standar terbuka (VRM) dan Live2D Cubism yang dapat ditukar kapan saja:
-      </p>
+      <!-- Kotak Masukan Pesan -->
+      <section class="chat-input-area" aria-label="Kirim Pesan">
+        <form action="#" method="post" class="chat-form">
+          <label for="chat-text" class="sr-only">Ketik pesan</label>
+          <textarea
+            id="chat-text"
+            name="message"
+            placeholder="Ketik pesan untuk AIRA..."
+            rows="1"
+            required
+          ></textarea>
 
-      <article>
-        <h3>1. AIRA — Persona Utama (VRM Sample A)</h3>
-        <figure>
-          <img src="../public/images/avatar-sample-a.png" alt="Model 3D VRM Avatar Sample A tampak depan dengan rambut pirang" width="160" height="200">
-          <figcaption>Format: <code>AvatarSample_A.vrm</code> (Humanoid 3D)</figcaption>
-        </figure>
-        <p><strong>Karakteristik:</strong> Ceria, energetik, suportif, gemar membantu belajar coding dan mendengarkan keluh kesah harian.</p>
-        <p><a href="chat.html">Pilih Avatar Ini di Stage &rarr;</a></p>
-      </article>
+          <div class="chat-form-bottom">
+            <div class="form-attachments">
+              <label for="chat-file" class="tool-btn" title="Lampirkan File" aria-label="Lampirkan File">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l7.88-7.88"/>
+                </svg>
+                <input type="file" id="chat-file" name="attachment" accept="image/*" class="sr-only">
+              </label>
 
-      <article>
-        <h3>2. AIRA — Gaya Kasual Berjaket (VRM Sample B)</h3>
-        <figure>
-          <img src="../public/images/avatar-sample-b.png" alt="Model 3D VRM Avatar Sample B gaya kasual rambut pendek berhoodie abu-abu" width="160" height="200">
-          <figcaption>Format: <code>AvatarSample_B.vrm</code> (Humanoid 3D)</figcaption>
-        </figure>
-        <p><strong>Karakteristik:</strong> Santai, tenang, gaya bahasa lebih kasual, cocok untuk teman santai sambil memutar musik lofi.</p>
-        <p><a href="character.html#scene-config">Konfigurasi di Studio &rarr;</a></p>
-      </article>
+              <button type="button" class="tool-btn" title="Input Suara" aria-label="Gunakan Mikrofon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="12" x2="12" y2="22"/>
+                </svg>
+              </button>
+            </div>
 
-      <article>
-        <h3>3. AIRA — Edisi Klasik 2D (Hiyori Live2D)</h3>
-        <figure>
-          <img src="../public/images/hiyori-preview.png" alt="Model Live2D Hiyori dengan seragam sekolah Jepang berambut cokelat" width="160" height="200">
-          <figcaption>Format: <code>Hiyori.model3.json</code> (Live2D Cubism)</figcaption>
-        </figure>
-        <p><strong>Karakteristik:</strong> Klasik 2D anime girl, ekspresi wajah dinamis, dan gerakan nafas alami.</p>
-        <p><a href="character.html#scene-config">Konfigurasi di Studio &rarr;</a></p>
-      </article>
-    </section>
+            <button type="submit" class="send-btn" title="Kirim Pesan" aria-label="Kirim">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="19" x2="12" y2="5"/>
+                <polyline points="5 12 12 5 19 12"/>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
 
-    <hr>
-
-    <!-- Modul Sistem (Diadaptasi dari Modul AIRI) -->
-    <section aria-labelledby="modules-heading">
-      <h2 id="modules-heading">Modul &amp; Kapabilitas Sistem (Mengacu ke Arsitektur AIRI)</h2>
-
-      <article>
-        <h3>1. Stage Renderer (WebGL / Three.js VRM &amp; Live2D)</h3>
-        <p>
-          Merender model 3D VRM menggunakan Three.js dan <code>@pixiv/three-vrm</code>. Dilengkapi fisika rambut, kedipan mata otomatis (<em>auto-blink</em>), dan pelacakan kursor mouse (<em>eye/head tracking</em>).
-        </p>
-      </article>
-
-      <article>
-        <h3>2. Modul Suara &amp; Pendengaran (Speech TTS &amp; Hearing STT)</h3>
-        <p>
-          Integrasi suara alami menggunakan Kokoro TTS dan Edge-TTS untuk berbicara secara realistis, serta Web Speech API / Whisper untuk mendengarkan suara pengguna melalui mikrofon.
-        </p>
-      </article>
-
-      <article>
-        <h3>3. Modul Memori Jangka Panjang (Long-Term Memory Alaya)</h3>
-        <p>
-          Sistem mencatat fakta-fakta spesifik pengguna (seperti nama panggilan, hobi, dan jadwal kuliah) ke dalam database untuk diinjeksikan kembali saat merespon obrolan.
-        </p>
-      </article>
-
-      <article>
-        <h3>4. Penglihatan Komputer &amp; Multimodal (Vision Input)</h3>
-        <p>
-          Dukungan pengiriman gambar tangkapan layar atau foto agar AIRA dapat menganalisis gambar dan memberikan respon visual secara kontekstual.
-        </p>
-      </article>
-    </section>
-
-    <hr>
-
-    <!-- Riwayat Sesi Percakapan Aktif (Data Tabular Semantik) -->
-    <section aria-labelledby="sessions-heading">
-      <h2 id="sessions-heading">Sesi Obrolan Terkini</h2>
-      
-      <table border="1">
-        <caption>Daftar Sesi Percakapan yang Pernah Dilakukan Pengguna</caption>
-        <thead>
-          <tr>
-            <th scope="col">Topik Sesi</th>
-            <th scope="col">Model Avatar</th>
-            <th scope="col">Pesan Terakhir</th>
-            <th scope="col">Memori Terkait</th>
-            <th scope="col">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Diskusi Proyek Web &amp; HTML</th>
-            <td>AvatarSample_A.vrm</td>
-            <td>"Semangat ya! Struktur semantik HTML-nya sudah rapi banget ✨"</td>
-            <td>Tugas semester mata kuliah Web Pekan 2</td>
-            <td><a href="chat.html">Lanjutkan di Stage &rarr;</a></td>
-          </tr>
-          <tr>
-            <th scope="row">Ngobrol Santai &amp; Hobi</th>
-            <td>AvatarSample_A.vrm</td>
-            <td>"Nanti kita tonton anime favoritmu bareng ya!"</td>
-            <td>Pengguna suka Detective Conan</td>
-            <td><a href="chat.html">Lanjutkan di Stage &rarr;</a></td>
-          </tr>
-          <tr>
-            <th scope="row">Uji Coba Model 3D Kasual</th>
-            <td>AvatarSample_B.vrm</td>
-            <td>"Gimana tampilanku dengan jaket baru ini?"</td>
-            <td>Eksperimen model VRM alternatif</td>
-            <td><a href="chat.html">Lanjutkan di Stage &rarr;</a></td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <hr>
-
-    <!-- Akses Cepat ke Menu Lain -->
-    <section aria-labelledby="quick-links-heading">
-      <h2 id="quick-links-heading">Navigasi Cepat</h2>
-      <ul>
-        <li><a href="chat.html">Masuk ke Ruang Panggung &amp; Obrolan (Live Stage)</a></li>
-        <li><a href="character.html#scene-config">Kustomisasi Model VRM &amp; Latar Belakang Panggung</a></li>
-        <li><a href="character.html#persona-config">Edit Persona Karakter (AIRI Card Definition)</a></li>
-        <li><a href="character.html#memory-vault">Inspeksi Bank Memori Jangka Panjang</a></li>
-      </ul>
-    </section>
+    </aside>
 
   </main>
-
-  <hr>
-
-  <footer>
-    <p>&copy; 2026 AIRA Project &bull; Dikembangkan oleh Kaisar Rayfa (Terinspirasi dari Arsitektur Project AIRI).</p>
-  </footer>
 
 </body>
 </html>
