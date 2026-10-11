@@ -5,31 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Masuk — AIRA</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="tailwind.css">
 </head>
 <body class="login-page">
 
   <!-- Navigasi Atas -->
-  <header class="navbar">
-    <div class="navbar-left">
+  <header class="navbar flex items-center justify-between">
+    <div class="navbar-left flex items-center gap-3">
       <a href="index.html" class="logo">
         <span class="logo-text">AIRA</span>
       </a>
     </div>
 
-    <div class="navbar-actions">
+    <div class="navbar-actions flex items-center gap-2">
       <a href="index.html" class="back-link">&larr; Kembali ke Panggung</a>
     </div>
   </header>
 
   <!-- Kontainer Kartu Masuk (Login Card) -->
-  <main class="login-container">
+  <main class="login-container flex items-center justify-center">
 
-    <section class="login-card" aria-labelledby="signin-heading">
+    <section class="login-card flex flex-col gap-6" aria-labelledby="signin-heading">
       <h1 id="signin-heading">Masuk Akun</h1>
       <p class="login-subtitle">Masukkan email dan kata sandi untuk masuk ke AIRA.</p>
 
       <!-- Form Masuk Akun -->
-      <form action="index.html" method="get" class="login-form">
+      <form action="index.html" method="get" class="login-form flex flex-col gap-4">
         <div class="form-group">
           <label for="user-email">Alamat Email:</label>
           <input

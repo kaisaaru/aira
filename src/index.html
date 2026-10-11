@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AIRA — AI Virtual Companion</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="tailwind.css">
 </head>
 <body>
 
   <!-- Navigasi Atas (Navbar) -->
-  <header class="navbar">
-    <div class="navbar-left">
+  <header class="navbar flex items-center justify-between">
+    <div class="navbar-left flex items-center gap-3">
       <a href="index.html" class="logo">
         <span class="logo-text">AIRA</span>
       </a>
@@ -54,11 +55,11 @@
   </header>
 
   <!-- Panggung Utama Interaktif -->
-  <main class="stage-container">
+  <main class="stage-container relative flex w-full overflow-hidden">
 
     <!-- Area Karakter di Tengah Layar -->
-    <section class="character-area" aria-label="Panggung Karakter">
-      <figure class="character-figure">
+    <section class="character-area relative flex flex-1 items-end justify-center" aria-label="Panggung Karakter">
+      <figure class="character-figure absolute flex items-end">
         <img
           src="../public/images/hiyori-preview.png"
           alt="Karakter AIRA tersenyum ramah menyapa di tengah panggung"
@@ -132,7 +133,7 @@
     </section>
 
     <!-- Panel Obrolan Sisi Kanan -->
-    <aside class="chat-panel" aria-label="Panel Percakapan">
+    <aside class="chat-panel flex flex-col" aria-label="Panel Percakapan">
 
       <!-- Header Obrolan -->
       <div class="chat-header">
