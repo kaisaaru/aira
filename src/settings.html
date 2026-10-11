@@ -5,33 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pengaturan — AIRA</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="tailwind.css">
 </head>
 <body>
 
   <!-- Navigasi Atas -->
-  <header class="navbar">
-    <div class="navbar-left">
+  <header class="navbar flex items-center justify-between">
+    <div class="navbar-left flex items-center gap-3">
       <a href="index.html" class="logo">
         <span class="logo-text">AIRA</span>
       </a>
     </div>
 
-    <div class="navbar-actions">
+    <div class="navbar-actions flex items-center gap-2">
       <a href="index.html" class="back-link">&larr; Kembali ke Panggung</a>
     </div>
   </header>
 
   <!-- Konten Utama Halaman Pengaturan -->
-  <main class="settings-container">
+  <main class="settings-container max-w-4xl mx-auto flex flex-col gap-6">
 
     <!-- Header Judul Pengaturan -->
-    <div class="settings-title-bar">
+    <div class="settings-title-bar flex items-center gap-3">
       <a href="index.html" class="back-arrow" title="Kembali ke Panggung">&lsaquo;</a>
       <h1>Pengaturan Karakter &amp; Tampilan</h1>
     </div>
 
     <!-- Daftar Modul Pengaturan -->
-    <div class="settings-list">
+    <div class="settings-list flex flex-col gap-6">
 
       <!-- 1. Profil & Persona Karakter -->
       <section class="settings-card" id="card-settings" aria-labelledby="heading-card">
@@ -100,7 +101,7 @@
         </div>
 
         <!-- Tabel Catatan Memori -->
-        <table class="settings-table">
+        <table class="settings-table w-full text-left">
           <thead>
             <tr>
               <th scope="col">Kode</th>
