@@ -156,7 +156,7 @@
       </div>
 
       <!-- Riwayat Balon Percakapan -->
-      <section class="chat-messages" aria-label="Daftar Pesan">
+      <section class="chat-messages" id="chat-messages" aria-label="Daftar Pesan">
         <!-- Balon Chat Pembuka AIRA -->
         <article class="message-bubble ai-message">
           <header class="message-header">
@@ -183,6 +183,11 @@
           <p>Keren! Semangat ya. Tampilannya sekarang jadi lebih nyaman dan serasi di panggung ini!</p>
         </article>
       </section>
+
+      <!-- Indikator AIRA Sedang Mengetik (Efek slideDown/slideUp jQuery) -->
+      <div id="typing-indicator" class="typing-indicator" style="display: none; padding: 6px 16px; font-size: 0.8rem; color: #38bdf8; font-style: italic;">
+        <span>AIRA sedang mengetik...</span>
+      </div>
 
       <!-- Kotak Masukan Pesan -->
       <section class="chat-input-area" aria-label="Kirim Pesan">
@@ -228,5 +233,8 @@
 
   </main>
 
+  <!-- jQuery & Logika Interaktif Client-Side (Week 5) -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

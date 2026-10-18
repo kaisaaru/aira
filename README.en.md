@@ -16,11 +16,11 @@ The focus for Week 2 is establishing semantic structure, tag completeness, and f
 
 ### Pages Overview
 
-| Page | File | Description |
-| :--- | :--- | :--- |
-| **Live Stage** | `src/index.html` | Primary interactive stage inspired by AIRI. Features the central character stage (Hiyori Live2D), floating dark-teal chat drawer with message bubbles and input bar, corner telemetry table, and camera controls. |
+| Page                  | File                | Description                                                                                                                                                                                                             |
+| :-------------------- | :------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Live Stage**        | `src/index.html`    | Primary interactive stage inspired by AIRI. Features the central character stage (Hiyori Live2D), floating dark-teal chat drawer with message bubbles and input bar, corner telemetry table, and camera controls.       |
 | **Studio & Settings** | `src/settings.html` | Settings hub inspired by AIRI's settings list. Contains configuration cards for character persona (AIRA Card), visual models (VRM/Live2D), long-term memory vault table, LLM response mode options, and system toggles. |
-| **Sign In** | `src/login.html` | Minimalist centered authentication interface modeled after AIRI's sign-in flow. Includes email and password input, terms notice, and account benefits comparison table. |
+| **Sign In**           | `src/login.html`    | Minimalist centered authentication interface modeled after AIRI's sign-in flow. Includes email and password input, terms notice, and account benefits comparison table.                                                 |
 
 ### Technical & Accessibility Compliance
 * **Semantic HTML5:** Built using standard landmark elements (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<figure>`, `<figcaption>`, and `<footer>`) rather than nested generic containers.
@@ -74,29 +74,174 @@ Based on the characteristics of **AIRA — AI Virtual Companion**, Tailwind CSS 
 
 ---
 
-## Screenshots (Desktop & Mobile Previews)
+## Week 5 — JavaScript & jQuery Milestone (Client-Side Interactivity & UI Animations)
+
+Building upon previous semantic and styling milestones, Week 5 integrates external script logic (`src/script.js`) and **jQuery 3.7.1** (via CDN) to introduce rich, dynamic client-side interactivity without creating new HTML pages.
+
+### Technical Implementation & Features
+
+#### 1. Pure JavaScript (Vanilla JS)
+
+##### A. Data Structures & Response Dictionaries
+* **`airaMemories` (Array of Objects):**  
+  Maintains local dummy memory records representing what the companion remembers about the user. Each object contains `id` (unique memory code, e.g. `MEM-01`), `category` (Identitas, Minat, Kuliah), `fact` (the recalled information string), `priority` (Utama, Penting, Sedang), and `createdAt` (timestamp).
+* **`airaResponses` (AI Companion Dialogue Dictionary):**  
+  A structured response dictionary containing varied companion replies grouped into 4 contextual categories:
+  - `greetings`: Welcoming opening greetings (e.g., *"Halo juga! Senang bisa ngobrol lagi denganmu hari ini."*, *"Hai Kaisar! Ada yang bisa AIRA bantu untuk sesi belajarmu?"*).
+  - `tasks`: Academic encouragement and web development study support (e.g., *"Semangat untuk tugas praktikumnya! Jangan lupa istirahat sejenak dan minum air ya."*, *"Wah, progres web programming kamu makin keren! Mau diskusikan bagian apa sekarang?"*).
+  - `relax`: Caring replies triggered when the user mentions fatigue or rest (e.g., *"Santai sejenak yuk. Mungkin mendengarkan musik santai bisa bikin pikiran lebih segar."*, *"Kalau sudah lelah ngoding, istirahatkan matamu sebentar ya, Kaisar."*).
+  - `defaultReplies`: Adaptive general conversational replies (e.g., *"Menarik sekali! Ceritakan lebih banyak tentang itu."*, *"AIRA mengerti. Fakta dan percakapan ini akan selalu kuingat dalam memori."*).
+
+##### B. Core Logic & Data Processing Functions
+* **`calculateMemoryStats(memories)`:**  
+  Receives an array of memory objects and performs a native `.forEach()` traversal to compute the total record count and aggregate priority tiers (`utama`, `penting`, `sedang`). Returns an aggregated summary object `{ total, utama, penting, sedang }`.
+* **`filterMemoriesByCategory(memories, category)`:**  
+  Filters memory records using native array `.filter()`. If the argument is `"all"` or empty, it returns the entire dataset; otherwise, it filters items matching the requested category case-insensitively (`toLowerCase()`).
+* **`generateCompanionReply(userMessage)`:**  
+  Analyzes incoming user chat text using keyword matching after lowercase normalization (`toLowerCase()`):
+  - Contains greeting keywords (`halo`, `hai`, `pagi`, `siang`, `malam`) &rarr; picks randomly from `airaResponses.greetings`.
+  - Contains task/coding keywords (`tugas`, `kuliah`, `coding`, `web`, `pr`) &rarr; picks randomly from `airaResponses.tasks`.
+  - Contains rest/fatigue keywords (`capek`, `lelah`, `istirahat`, `ngantuk`) &rarr; picks randomly from `airaResponses.relax`.
+  - Any other conversation topics &rarr; picks randomly from `airaResponses.defaultReplies`.  
+  Random selection is calculated using `list[Math.floor(Math.random() * list.length)]`.
+* **`getCurrentTimeString()`:**  
+  Extracts the current system time via native `new Date()`, pads hours and minutes to 2 digits using `.padStart(2, "0")`, and returns a clean `"HH:mm"` timestamp.
+* **`renderMemoryTable(data)`:**  
+  Programmatically generates and injects HTML table rows into `#memory-table-body`:
+  - Clears previous table content via `innerHTML = ""`.
+  - Displays a dedicated empty state row (`<tr><td colspan="5">...</td></tr>`) when no entries match the active filter.
+  - Loops via `.forEach()` to create `document.createElement("tr")`, sets the `data-id` attribute, styles priority badges (`#38bdf8` for Utama, `#2dd4bf` for Penting, `#94a8b3` for Sedang), attaches delete action buttons, and appends rows to the DOM via `appendChild(tr)`.
+* **`updateMemoryStatsDisplay()`:**  
+  Invokes `calculateMemoryStats(airaMemories)` and updates the `#memory-stats-summary` DOM element with color-coded priority totals.
+
+---
+
+#### 2. jQuery (Event Handling, Client-Side Validation & UI Animations)
+
+All jQuery modules are wrapped inside `$(document).ready(function () { ... })` to ensure execution only after full DOM readiness:
+
+##### A. Sign In Module (`src/login.html`)
+* **Interactive Form Validation:** Intercepts `.on('submit')` on `.login-form` to prevent default form submission (`e.preventDefault()`) when inputs fail client-side checks.
+* **Email & Password Verification:** Verifies non-empty fields and validates email formatting using Regular Expressions (`^[^\s@]+@[^\s@]+\.[^\s@]+$`).
+* **Visual Inline Errors:** Erroneous inputs receive `.input-invalid` (red border and subtle glow), autofocuses the first invalid field (`.focus()`), and reveals inline error messages using jQuery `.slideDown(150)`.
+* **Real-time Error Auto-Clear:** Input listeners `.on('input')` on email and password fields immediately clear red borders and slide up error messages (`slideUp(120)`) as soon as the user starts typing.
+
+##### B. Interactive Stage Chat Module (`src/index.html`)
+* **User Message Submission:** Handles chat form submission, verifies non-empty text, constructs `<article class="message-bubble user-message">`, appends it to `#chat-messages`, reveals it with `.fadeIn(300)`, and triggers auto-scrolling.
+* **Typing Indicator Animation:** Shows the `#typing-indicator` bubble ("AIRA sedang mengetik...") via `.slideDown(200)` to simulate real-time AI processing.
+* **Simulated AI Latency:** Employs an 800ms `setTimeout()` delay, slides the indicator away (`slideUp(150)`), synthesizes a response via `generateCompanionReply()`, injects the AI speech bubble (`ai-message`), reveals it with `.fadeIn(350)`, and scrolls the window down.
+* **Chat Auto-Scroll:** The `scrollChatToBottom()` function animates `#chat-messages` scroll position using jQuery `.animate({ scrollTop: scrollHeight }, 300)`.
+* **Keyboard Shortcut:** Textarea listener `.on('keydown')` enables quick message transmission upon pressing `Enter` (without `Shift`).
+
+##### C. Memory Vault Module (`src/settings.html`)
+* **Accordion Form Toggle:** Button `$("#toggle-memory-form-btn").on("click", ...)` smoothly toggles the add-memory form with jQuery `.slideToggle(300)`, updates the button label (`+ Tambah Catatan` &harr; `✕ Tutup Form`), and focuses the fact textarea.
+* **Cancel Form:** Button `#cancel-memory-form-btn` slides the form up (`slideUp(250)`) and resets all error indicators.
+* **Mandatory Fact Validation:** Submitting an empty fact highlights the textarea (`.input-invalid`) and slides down `#new-mem-error` with `.slideDown(150)`. Real-time typing clears the error with `.slideUp(120)`.
+* **Dynamic Record Storage:** Valid submissions automatically generate sequential IDs (`MEM-04`), push records to `airaMemories`, re-render the table, update statistics, slide the form shut, and trigger a success toast notification.
+* **Realtime Category Filter:** Dropdown listener `.on('change')` on `#filter-memory-category` filters table rows instantaneously without page reload.
+* **Custom Confirmation Modal:**
+  - Clicking a row's *Hapus* button captures the record ID and displays `#delete-modal` with jQuery `.fadeIn(200)` over a blurred backdrop.
+  - Clicking *Batal* or the backdrop closes the modal via `.fadeOut(200)`.
+  - Clicking *Ya, Hapus Catatan* closes the modal, smoothly fades out the target table row via `.fadeOut(350)`, removes the item from the data array, updates statistics, and triggers a deletion toast.
+* **Floating Toast Notification (Kotori Style):**
+  - Displays dynamic messages and Lucide-style SVG icons (cyan checkmark for additions, rose trash can for deletions).
+  - Slides into view from the right (`.show`).
+  - Animates linear progress bar depletion using jQuery `.animate({ width: "0%" }, duration, "linear")`.
+  - Automatically retreats off-screen (`.hiding`) upon timeout or manual dismissal via `#close-toast-btn`.
+
+---
+
+### Video Demonstration
+
+Interactive client-side workflows (login validation, live stage chat, Memory Vault CRUD, category filtering, and modal confirmations) are recorded in:
+
+<video src="docs/videos/week5_desktop.mp4" controls width="100%">
+  Your browser does not support the video tag. You can view or download the video directly at <a href="docs/videos/week5_desktop.mp4">docs/videos/week5_desktop.mp4</a>.
+</video>
+
+---
+
+### Week 5 Interactivity Screenshots (Before vs After)
+
+#### 1. Sign In Form Validation (`src/login.html`)
+|            Before Interaction (*Before* — 00:00)            |            After Validation (*After* — 00:01)             |
+| :---------------------------------------------------------: | :-------------------------------------------------------: |
+| ![Login Before](docs/screenshots/week5/01-login-before.png) | ![Login After](docs/screenshots/week5/01-login-after.png) |
+|            *Empty form before clicking "Masuk"*             |    *Red input borders and inline error text displayed*    |
+
+---
+
+#### 2. Live Stage Chat Interaction (`src/index.html`)
+|           Before Interaction (*Before* — 00:09)           |            After Interaction (*After* — 00:19)            |
+| :-------------------------------------------------------: | :-------------------------------------------------------: |
+| ![Chat Before](docs/screenshots/week5/02-chat-before.png) |  ![Chat After](docs/screenshots/week5/02-chat-after.png)  |
+|          *Chat drawer while typing user message*          | *User bubble, typing indicator, and animated AI response* |
+
+---
+
+#### 3. Toggle Add Memory Form (`src/settings.html`)
+|                     Before Opening (*Before* — 00:22)                     |                     After Opening (*After* — 00:24)                     |
+| :-----------------------------------------------------------------------: | :---------------------------------------------------------------------: |
+| ![Toggle Form Before](docs/screenshots/week5/03-memory-toggle-before.png) | ![Toggle Form After](docs/screenshots/week5/03-memory-toggle-after.png) |
+|                *Table view with "+ Tambah Catatan" button*                |                *Form smoothly revealed via slideToggle*                 |
+
+---
+
+#### 4. Add Memory Form Validation (`src/settings.html`)
+|                        Before Submission (*Before* — 00:25)                         |                        After Validation (*After* — 00:26)                         |
+| :---------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
+| ![Memory Validation Before](docs/screenshots/week5/04-memory-validation-before.png) | ![Memory Validation After](docs/screenshots/week5/04-memory-validation-after.png) |
+|                       *Fact textarea empty before submission*                       |                *Red input border and inline error message appear*                 |
+
+---
+
+#### 5. Dynamic Memory Addition & Floating Toast (`src/settings.html`)
+|                    Before Submission (*Before* — 00:38)                     |                    After Submission (*After* — 00:40)                     |
+| :-------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
+| ![Memory Submit Before](docs/screenshots/week5/05-memory-submit-before.png) | ![Memory Submit After](docs/screenshots/week5/05-memory-submit-after.png) |
+|                   *Form filled with new fact ("MEM-04")*                    |     *Row appended dynamically, stats updated, & success toast shown*      |
+
+---
+
+#### 6. Memory Category Filtering (`src/settings.html`)
+|                       Before Filtering (*Before* — 00:44)                       |                       After Filtering (*After* — 00:46)                       |
+| :-----------------------------------------------------------------------------: | :---------------------------------------------------------------------------: |
+| ![Category Filter Before](docs/screenshots/week5/06-memory-category-before.png) | ![Category Filter After](docs/screenshots/week5/06-memory-category-after.png) |
+|                      *All categories displayed by default*                      |    *Table instantly filtered to selected category ("Identitas & Profil")*     |
+
+---
+
+#### 7. Custom Confirmation Modal & Memory Deletion (`src/settings.html`)
+|                     Before Deletion (*Before* — 00:53)                      |               After Deletion Confirmation (*After* — 00:58)               |
+| :-------------------------------------------------------------------------: | :-----------------------------------------------------------------------: |
+| ![Memory Delete Before](docs/screenshots/week5/07-memory-delete-before.png) | ![Memory Delete After](docs/screenshots/week5/07-memory-delete-after.png) |
+|             *Custom modal dialog displayed with backdrop blur*              |         *Row faded out and deletion toast notification displayed*         |
+
+---
+
+## Page Screenshots (Week 4 Multi-Device Previews)
 
 ### 1. Live Stage (`src/index.html`)
 
-| Desktop View (1568 &times; 882) | Mobile View (390 &times; 844) |
-| :---: | :---: |
-| ![Live Stage Desktop](docs/screenshots/index.png) | ![Live Stage Mobile](docs/screenshots/index-mobile.png) |
+|             Desktop View (1568 &times; 882)             |                 Mobile View (390 &times; 844)                 |
+| :-----------------------------------------------------: | :-----------------------------------------------------------: |
+| ![Live Stage Desktop](docs/screenshots/week4/index.png) | ![Live Stage Mobile](docs/screenshots/week4/index-mobile.png) |
 
 ---
 
 ### 2. Studio & Settings (`src/settings.html`)
 
-| Desktop View | Mobile View |
-| :---: | :---: |
-| ![Settings Desktop](docs/screenshots/settings.png) | ![Settings Mobile](docs/screenshots/settings-mobile.png) |
+|                       Desktop View                       |                          Mobile View                           |
+| :------------------------------------------------------: | :------------------------------------------------------------: |
+| ![Settings Desktop](docs/screenshots/week4/settings.png) | ![Settings Mobile](docs/screenshots/week4/settings-mobile.png) |
 
 ---
 
 ### 3. Sign In (`src/login.html`)
 
-| Desktop View | Mobile View |
-| :---: | :---: |
-| ![Sign In Desktop](docs/screenshots/login.png) | ![Sign In Mobile](docs/screenshots/login-mobile.png) |
+|                     Desktop View                     |                        Mobile View                         |
+| :--------------------------------------------------: | :--------------------------------------------------------: |
+| ![Sign In Desktop](docs/screenshots/week4/login.png) | ![Sign In Mobile](docs/screenshots/week4/login-mobile.png) |
 
 ---
 
@@ -109,13 +254,11 @@ aira/
 ├── package.json               # npm dependencies and Tailwind CSS build scripts
 ├── tailwind.config.js         # Tailwind theme color tokens and utility configuration
 ├── docs/
-│   └── screenshots/           # Weekly progress screenshots (desktop & mobile)
-│       ├── index.png          # Live stage desktop preview
-│       ├── index-mobile.png   # Live stage mobile preview
-│       ├── settings.png       # Settings hub desktop preview
-│       ├── settings-mobile.png # Settings hub mobile preview
-│       ├── login.png          # Sign in desktop preview
-│       └── login-mobile.png   # Sign in mobile preview
+│   ├── videos/                # Interactive features demo video recordings
+│   │   └── week5_desktop.mp4  # Week 5 desktop interactivity demonstration
+│   └── screenshots/           # Progress screenshots
+│       ├── week5/             # Before vs After interactivity evidence (Week 5)
+│       └── week4/             # Multi-device previews from previous milestone (Week 4)
 ├── public/                    # Static assets
 │   ├── images/                # Character models and avatars (Hiyori, Avatars)
 │   └── models/
@@ -124,6 +267,7 @@ aira/
     ├── input.css              # Tailwind CSS input file (@tailwind directives)
     ├── tailwind.css           # Compiled Tailwind CSS output file
     ├── style.css              # AIRA custom native stylesheet (Week 3)
+    ├── script.js              # Pure JavaScript logic & jQuery animations (Week 5)
     ├── index.html             # Live stage / Dashboard page
     ├── settings.html          # Studio, Settings & Memory Vault Table
     └── login.html             # Authentication & Sign in form page
@@ -196,11 +340,13 @@ Official course syllabus roadmap (School of Computing, Telkom University):
 - [x] Documented rationale for choosing Tailwind over Bootstrap in README
 
 ### Week 5 — JavaScript & jQuery
-- [ ] Interactive chat UI
-- [ ] Dynamic message rendering
-- [ ] Client-side form validation
-- [ ] Character expression and mood toggles
-- [ ] Local mock responses
+- [x] Dynamic interactive chat UI with keyword-based mock companion responses
+- [x] Native DOM message and memory table rendering (Vanilla JS)
+- [x] Client-side form validation (inline error & realtime auto-clear)
+- [x] Array of objects manipulation & data processing functions (filter, stats)
+- [x] jQuery UI animations (slideToggle, fadeIn, fadeOut, slideDown, slideUp, animate)
+- [x] Custom confirmation modal & floating toast notification
+- [x] Before vs After screenshot comparison & video demonstration link
 
 ### Week 6 — React Dasar
 - [ ] React project initialization
