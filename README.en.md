@@ -33,6 +33,7 @@ aira/
 ├── README.md                  # Documentation in Indonesian
 ├── README.en.md               # Documentation in English
 └── frontend/                  # React Vite Project
+    ├── .env.example           # Environment variable template
     ├── index.html             # Main HTML entry document
     ├── package.json           # Dependencies and build scripts
     ├── vite.config.js         # Vite configuration
@@ -40,15 +41,16 @@ aira/
     └── src/
         ├── main.jsx           # React root renderer
         ├── App.jsx            # Main state container & settings view
-        ├── style.css          # Authentic AIRI design system (Week 5)
+        ├── style.css          # Authentic AIRI design system (Week 5 & 7)
         ├── tailwind.css       # Utility styles
-        └── components/        # 6 Modular React Components:
+        └── components/        # 7 Modular React Components:
             ├── Navbar.jsx           # Sticky top navigation bar
             ├── MemoryToolbar.jsx    # Stats summary & category filter
             ├── MemoryTable.jsx      # Tabular data & conditional rendering
             ├── MemoryRow.jsx        # Individual memory entry row
             ├── MemoryForm.jsx       # Controlled memory input form
-            └── ToastContainer.jsx   # Stacked notifications & progress bars
+            ├── ToastContainer.jsx   # Stacked notifications & progress bars
+            └── CompanionWisdom.jsx  # External API consumption (Week 7)
 ```
 
 ---
@@ -83,9 +85,33 @@ In full compliance with the Week 6 assignment specifications:
   - Conditional rendering: Displays the mandatory fallback message *"Belum ada data catatan memori. Tambahkan catatan baru melalui formulir di atas."* when the vault is empty.
   - Stacked toast notifications with animated duration progress bars and action-specific themes (**Blue** for save, **Red** for delete).
 
+### Week 7 — Ajax & External / Mock API Consumption
+In full compliance with the Week 7 assignment specifications:
+- **API Endpoint Selection**: Consumes public REST API `https://dummyjson.com/quotes?limit=4`. Selected for its thematic fit with the AI companion (daily inspiration & dialog wisdom), zero CORS restrictions, and requiring no complicated auth keys.
+- **State Flow & Code Implementation**:
+  - `fetchQuotes(urlToFetch)`: Asynchronous function utilizing native `fetch()` to handle HTTP GET requests.
+  - `isLoading` state: Boolean controlling loading indicator presentation (spinner animation & `GET` request details).
+  - `error` state: Captures both network connection drops and non-OK HTTP status codes (e.g. `404 Not Found`).
+  - `quotes` state: Holds fetched wisdom items rendered as structured cards (`.quotes-grid`) via `.map()` with unique `key={item.id}` attributes.
+- **Interactivity & Retry Button**:
+  - Interactive **Coba Lagi** (*Retry*) button displayed conditionally upon error state to re-trigger `fetchQuotes()`.
+  - **Simpan ke Memori** action: Allows saving quotes directly into the local *Memory Vault* table (Week 6 integration).
+  - Testing actions toolbar: Dedicated buttons (*Uji Simulasi Error API* and *Reset Endpoint Normal*) for test and screenshot verification.
+- **Environment Variables**: Provided `frontend/.env.example` and `import.meta.env.VITE_QUOTES_API_URL` consumption with reliable fallback to the default endpoint URL.
+
 ---
 
-## Documentation & Screenshots (Week 6)
+## Documentation & Screenshots
+
+### Week 7 Screenshots (Ajax & API Consumption)
+
+|  No   | State Condition        | Description                                                         | Screenshot Path                                        |
+| :---: | :--------------------- | :------------------------------------------------------------------ | :----------------------------------------------------- |
+|   1   | **Loading State**      | Spinner animation and status message during async request execution | `docs/screenshots/week7/01-api-loading-state.jpeg`     |
+|   2   | **Success State**      | Structured card grid rendering via `.map()` with unique keys        | `docs/screenshots/week7/02-api-success-state.jpeg`     |
+|   3   | **Error State**        | Detailed error message along with mandatory "Coba Lagi" button      | `docs/screenshots/week7/03-api-error-state.jpeg`       |
+
+### Week 6 Screenshots (React & State Management)
 
 |  No   | Feature                | Description                                       | Screenshot Path                                             |
 | :---: | :--------------------- | :------------------------------------------------ | :---------------------------------------------------------- |
