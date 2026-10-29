@@ -990,6 +990,15 @@ main.login-container {
   }
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .toast-card.show {
   animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -1175,4 +1184,163 @@ main.login-container {
   background: #e11d48;
   box-shadow: 0 6px 18px rgba(244, 63, 94, 0.5);
   transform: translateY(-1px);
+}
+
+/* --- 10. Wawasan & Kutipan API Eksternal (Week 7) --- */
+.wisdom-header-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.wisdom-status-tag {
+  font-family: monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-left: 2px;
+}
+
+.wisdom-status-ok {
+  color: #2dd4bf;
+  background: rgba(45, 212, 191, 0.1);
+  border: 1px solid rgba(45, 212, 191, 0.25);
+}
+
+.wisdom-status-err {
+  color: #f43f5e;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+}
+
+.quotes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.quote-card {
+  background-color: rgba(11, 26, 34, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 140px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.quote-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.quote-badge {
+  font-family: monospace;
+  font-size: 0.72rem;
+  color: var(--accent-cyan);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.quote-text {
+  color: #f1f5f9;
+  font-size: 0.88rem;
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.quote-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid rgba(56, 189, 248, 0.12);
+  gap: 8px;
+}
+
+.quote-author {
+  font-size: 0.78rem;
+  color: #2dd4bf;
+  font-weight: 500;
+}
+
+.btn-save-quote {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  color: var(--accent-cyan);
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-save-quote:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--accent-cyan);
+  color: #ffffff;
+}
+
+.api-state-box {
+  border-radius: var(--radius-sm);
+  padding: 24px 20px;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.api-loading-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed rgba(56, 189, 248, 0.25);
+}
+
+.api-error-box {
+  background: rgba(28, 14, 18, 0.85);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+}
+
+.api-error-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.api-spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 2.5px solid rgba(56, 189, 248, 0.2);
+  border-top-color: var(--accent-cyan);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Responsif Mobile untuk Grid Kutipan & Testing Actions */
+@media (max-width: 768px) {
+  .quotes-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .quote-card {
+    padding: 14px;
+  }
 }
