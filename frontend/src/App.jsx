@@ -4,6 +4,7 @@ import MemoryToolbar from "./components/MemoryToolbar";
 import MemoryTable from "./components/MemoryTable";
 import MemoryForm from "./components/MemoryForm";
 import ToastContainer from "./components/ToastContainer";
+import CompanionWisdom from "./components/CompanionWisdom";
 
 const INITIAL_MEMORIES = [
   {
@@ -286,7 +287,7 @@ export default function App() {
                 title="Buka form input memori"
                 onClick={() => setIsFormOpen(!isFormOpen)}
               >
-                {isFormOpen ? "✕ Tutup Form" : "+ Tambah Catatan"}
+                {isFormOpen ? "Tutup Formulir" : "Tambah Catatan"}
               </button>
             </div>
 
@@ -356,7 +357,10 @@ export default function App() {
             </div>
           </section>
 
-          {/* 4. Pengaturan Respon Obrolan */}
+          {/* 4. Wawasan & Inspirasi AI (Integrasi AJAX & API Eksternal - Tugas 7) */}
+          <CompanionWisdom onSaveToMemory={handleAddMemory} showToast={showToast} />
+
+          {/* 5. Pengaturan Respon Obrolan */}
           <section className="settings-card" id="provider-settings" aria-labelledby="heading-providers">
             <div className="card-summary">
               <div className="card-text">
