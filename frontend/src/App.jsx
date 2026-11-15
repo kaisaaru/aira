@@ -29,32 +29,19 @@ const INITIAL_MEMORIES = [
     createdAt: "2026-10-11 14:10",
   },
 ];
+const API_MEMORIES_URL =
+  import.meta.env.VITE_MEMORIES_API_URL || "http://localhost:3001/memories";
 
 export default function App() {
-  // State entitas utama: Catatan Memori
-  const [memories, setMemories] = useState(() => {
-    try {
-      const saved = localStorage.getItem("aira_memories_week6");
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.warn("Gagal membaca localStorage", e);
-    }
-    return INITIAL_MEMORIES;
-  });
-
+  // State entitas utama: Catatan Memori dari Backend NestJS
+  const [memories, setMemories] = useState(INITIAL_MEMORIES);
+  const [isLoadingMemories, setIsLoadingMemories] = useState(true);
+  const [backendStatus, setBackendStatus] = useState("connecting");
   const [filterCategory, setFilterCategory] = useState("all");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
+  const [editTarget, setEditTarget] = useState(null);
   const [toasts, setToasts] = useState([]);
-
-  // Sinkronisasi otomatis ke localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem("aira_memories_week6", JSON.stringify(memories));
-    } catch (e) {
-      console.warn("Gagal menyimpan ke localStorage", e);
-    }
-  }, [memories]);
 
   // Handler: Tampilkan Toast Baru (Bertumpuk ke bawah, toast lama di atas)
   const showToast = (message, type = "save") => {
@@ -66,34 +53,110 @@ export default function App() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  // Handler: Tambah Catatan Baru
-  const handleAddMemory = ({ category, priority, fact }) => {
-    const nextNum =
-      memories.length > 0
-        ? Math.max(
-            ...memories.map((m) => {
-              const num = parseInt(m.id.replace(/\D/g, ""), 10);
-              return isNaN(num) ? 0 : num;
-            }),
-            0
-          ) + 1
-        : 1;
+  // GET: Memuat semua data memori dari backend NestJS
+  const fetchMemories = useCallback(async () => {
+    try {
+      setIsLoadingMemories(true);
+      const res = await fetch(API_MEMORIES_URL);
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: Gagal memuat data dari server NestJS.`);
+      }
+      const data = await res.json();
+      setMemories(data);
+      setBackendStatus("connected");
+    } catch (err) {
+      console.warn("Backend NestJS offline atau tidak terjangkau:", err);
+      setBackendStatus("offline");
+      // Fallback lokal jika backend belum berjalan
+      const saved = localStorage.getItem("aira_memories_week6");
+      if (saved) {
+        setMemories(JSON.parse(saved));
+      } else {
+        setMemories(INITIAL_MEMORIES);
+      }
+    } finally {
+      setIsLoadingMemories(false);
+    }
+  }, []);
 
-    const newId = `MEM-${String(nextNum).padStart(2, "0")}`;
-    const newEntry = {
-      id: newId,
-      category,
-      priority,
-      fact,
-      createdAt: new Date().toISOString(),
+  useEffect(() => {
+    fetchMemories();
+  }, [fetchMemories]);
+
+  // POST: Menambah Catatan Baru ke Backend NestJS
+  const handleAddMemory = async (input) => {
+    const categoryMap = {
+      Identitas: "identity",
+      Minat: "hobby",
+      Kuliah: "study",
+      Preferensi: "preference",
     };
+    const category = categoryMap[input.category] || input.category || "study";
+    const factText = input.factText || input.fact;
+    const importance =
+      input.importance !== undefined
+        ? Number(input.importance)
+        : input.priority === "Utama"
+        ? 5
+        : input.priority === "Penting"
+        ? 4
+        : 3;
 
-    setMemories([...memories, newEntry]);
-    setIsFormOpen(false);
-    showToast(`Catatan memori ${newId} berhasil disimpan!`, "save");
+    try {
+      const res = await fetch(API_MEMORIES_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category, factText, importance }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        const msg = Array.isArray(errData.message)
+          ? errData.message.join(", ")
+          : errData.message || "Gagal menambah data ke backend.";
+        throw new Error(msg);
+      }
+
+      const created = await res.json();
+      setMemories((prev) => [...prev, created]);
+      setIsFormOpen(false);
+      showToast(`Catatan memori ${created.id} berhasil ditambahkan ke backend!`, "save");
+    } catch (err) {
+      console.error("Gagal menambah memori:", err);
+      showToast(err.message, "delete");
+    }
   };
 
-  // Handler: Modal Konfirmasi Hapus
+  // PATCH: Mengubah Data Memori di Backend NestJS
+  const handleEditMemory = async (id, updatedFields) => {
+    try {
+      const res = await fetch(`${API_MEMORIES_URL}/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedFields),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        const msg = Array.isArray(errData.message)
+          ? errData.message.join(", ")
+          : errData.message || "Gagal mengubah data di backend.";
+        throw new Error(msg);
+      }
+
+      const updated = await res.json();
+      setMemories((prev) =>
+        prev.map((item) => (item.id === id ? updated : item)),
+      );
+      setEditTarget(null);
+      showToast(`Catatan memori ${id} berhasil diperbarui di backend!`, "save");
+    } catch (err) {
+      console.error("Gagal memperbarui memori:", err);
+      showToast(err.message, "delete");
+    }
+  };
+
+  // DELETE: Menghapus Data Memori dari Backend NestJS
   const openDeleteModal = (id) => {
     setDeleteTargetId(id);
   };
@@ -102,32 +165,62 @@ export default function App() {
     setDeleteTargetId(null);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (!deleteTargetId) return;
     const target = deleteTargetId;
-    setMemories((prev) => prev.filter((item) => item.id !== target));
-    setDeleteTargetId(null);
-    showToast(`Catatan memori ${target} telah dihapus.`, "delete");
+
+    try {
+      const res = await fetch(`${API_MEMORIES_URL}/${target}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || "Gagal menghapus data dari backend.");
+      }
+
+      setMemories((prev) => prev.filter((item) => item.id !== target));
+      setDeleteTargetId(null);
+      showToast(`Catatan memori ${target} telah dihapus dari backend.`, "delete");
+    } catch (err) {
+      console.error("Gagal menghapus memori:", err);
+      showToast(err.message, "delete");
+    }
+  };
+
+  // Handler: Sinkronkan / Refetch Ulang Data dari Backend
+  const handleRefreshBackend = () => {
+    fetchMemories();
+    showToast("Memperbarui data dari backend NestJS...", "save");
   };
 
   // Handler: Uji Empty State & Reset Default
   const handleClearAll = () => {
     setMemories([]);
-    showToast("Semua data catatan memori dikosongkan.", "delete");
+    showToast("Data memori dikosongkan (Uji Empty State).", "delete");
   };
 
   const handleResetDefaults = () => {
-    setMemories(INITIAL_MEMORIES);
+    fetchMemories();
     setFilterCategory("all");
-    showToast("Sampel data memori dipulihkan.", "save");
+    showToast("Memulihkan data memori dari backend NestJS.", "save");
   };
-
   // Filter Kategori
   const filteredMemories = memories.filter((item) => {
     if (!filterCategory || filterCategory === "all") return true;
-    return item.category.toLowerCase() === filterCategory.toLowerCase();
+    const cat = (item.category || "").toLowerCase();
+    const target = filterCategory.toLowerCase();
+    if (target === "identity" || target === "identitas") {
+      return cat === "identity" || cat === "identitas";
+    }
+    if (target === "hobby" || target === "minat") {
+      return cat === "hobby" || cat === "minat";
+    }
+    if (target === "study" || target === "kuliah") {
+      return cat === "study" || cat === "kuliah";
+    }
+    return cat === target;
   });
-
   return (
     <div>
       {/* Floating Stacked Toast Notifications (Identik Week 5 & Bertumpuk) */}
@@ -186,6 +279,39 @@ export default function App() {
         </div>
       )}
 
+      {/* Modal Ubah Memori (Week 9 - Integrasi PATCH Backend NestJS) */}
+      {editTarget && (
+        <div
+          id="edit-modal"
+          className="modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="edit-modal-title"
+        >
+          <div className="modal-card max-w-lg">
+            <div className="modal-header">
+              <span className="modal-icon-badge">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </span>
+              <h3 id="edit-modal-title" className="modal-title">
+                Ubah Catatan Memori ({editTarget.id})
+              </h3>
+            </div>
+            <p className="modal-description mb-3">
+              Perbarui data memori pada server backend NestJS (metode HTTP PATCH).
+            </p>
+            <MemoryForm
+              initialData={editTarget}
+              isEdit={true}
+              onEditMemory={handleEditMemory}
+              onCancel={() => setEditTarget(null)}
+            />
+          </div>
+        </div>
+      )}
       {/* Komponen 1: Navbar (Sticky di Atas) */}
       <Navbar />
 
@@ -276,7 +402,20 @@ export default function App() {
           <section className="settings-card" id="memory-settings" aria-labelledby="heading-memory">
             <div className="card-summary flex items-center justify-between">
               <div className="card-text">
-                <h2 id="heading-memory">Catatan Memori</h2>
+                <div className="flex items-center gap-3">
+                  <h2 id="heading-memory">Catatan Memori</h2>
+                  <span
+                    className={`text-xs px-2.5 py-0.5 rounded-full border font-medium ${
+                      backendStatus === "connected"
+                        ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
+                        : "bg-amber-500/15 text-amber-400 border-amber-500/30"
+                    }`}
+                  >
+                    {backendStatus === "connected"
+                      ? "● NestJS Live (Port 3001)"
+                      : "○ Connecting Backend"}
+                  </span>
+                </div>
                 <p>Daftar catatan dan preferensi pengguna yang diingat oleh karakter.</p>
               </div>
               {/* Tombol Interaktif Buka/Tutup Form */}
@@ -302,9 +441,10 @@ export default function App() {
             <MemoryTable
               memories={memories}
               filteredMemories={filteredMemories}
+              isLoading={isLoadingMemories}
               onDeleteRequest={openDeleteModal}
+              onEditRequest={(item) => setEditTarget(item)}
             />
-
             {/* Komponen 5: MemoryForm (Form Terkontrol dengan Validasi) */}
             {isFormOpen && (
               <MemoryForm
@@ -337,22 +477,20 @@ export default function App() {
               <span style={{ color: "rgba(148, 168, 179, 0.4)" }}>&bull;</span>
               <button
                 type="button"
-                onClick={handleResetDefaults}
+                onClick={handleRefreshBackend}
                 style={{
                   background: "none",
                   border: "none",
-                  color: "#94a8b3",
+                  color: "#38bdf8",
                   cursor: "pointer",
                   textDecoration: "underline",
                   fontSize: "0.8rem",
                   fontFamily: "inherit",
                   transition: "color 0.2s",
                 }}
-                onMouseEnter={(e) => (e.target.style.color = "#38bdf8")}
-                onMouseLeave={(e) => (e.target.style.color = "#94a8b3")}
-                title="Pulihkan data sampel memori awal"
+                title="Muat ulang data dari server NestJS"
               >
-                Pulihkan Sampel Data
+                Sinkronkan dengan Backend NestJS (GET)
               </button>
             </div>
           </section>

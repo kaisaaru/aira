@@ -32,6 +32,11 @@ aira/
 ├── docs/                      # Dokumentasi & tangkapan layar tugas per pekan
 ├── README.md                  # Dokumentasi bahasa Indonesia
 ├── README.en.md               # Dokumentasi bahasa Inggris
+├── backend/                   # Proyek NestJS (MVC & REST API)
+│   ├── src/
+│   │   ├── main.ts            # Bootstrap aplikasi, CORS & ValidationPipe
+│   │   └── memories/          # Resource CRUD Catatan Memori
+│   └── test-api.http          # Koleksi request REST Client
 └── frontend/                  # Proyek React (Vite)
     ├── .env.example           # Template environment variable
     ├── index.html             # Dokumen HTML utama
@@ -99,6 +104,17 @@ Sesuai dengan spesifikasi tugas praktikum Week 7:
   - Panel pengujian (*testing actions*): Tombol *Uji Simulasi Error API* dan *Reset Endpoint Normal* untuk mempermudah demonstrasi dan tangkapan layar tugas.
 - **Environment Variables**: Menyediakan `frontend/.env.example` dan pembacaan `import.meta.env.VITE_QUOTES_API_URL` dengan fallback aman ke URL default.
 
+### Week 9 — NestJS Dasar & Struktur MVC
+Sesuai dengan spesifikasi tugas praktikum Week 9:
+- **Backend NestJS**: Menambahkan aplikasi backend terpisah di direktori `backend/` yang berjalan pada `http://localhost:3001`.
+- **Resource Utama**: Mengelola entitas **Catatan Memori** dengan field `id`, `category`, `factText`, `importance`, `isActive`, dan `createdAt`.
+- **Struktur MVC**: Memisahkan `MemoriesController`, `MemoriesService`, Entity, dan DTO dalam module `memories`.
+- **Operasi CRUD**: Menyediakan endpoint `GET`, `POST`, `PATCH`, dan `DELETE` pada `/memories`, dengan penyimpanan sementara menggunakan array di memori.
+- **Validasi DTO**: Menggunakan `class-validator` untuk validasi kategori, isi fakta, panjang teks, tipe angka, dan rentang prioritas 1 sampai 5.
+- **Penanganan Error**: Menggunakan `NotFoundException` untuk ID yang tidak ditemukan dan `ConflictException` untuk fakta memori duplikat.
+- **Integrasi Frontend**: Frontend React terhubung ke backend melalui `fetch()` untuk alur penuh tambah, baca, ubah, dan hapus catatan memori.
+- **Pengujian REST Client**: Menyediakan koleksi request dan skenario error pada `backend/test-api.http` sebelum integrasi dengan frontend.
+
 ---
 
 ## Dokumentasi Tangkapan Layar
@@ -119,3 +135,9 @@ Sesuai dengan spesifikasi tugas praktikum Week 7:
 |   2   | **Tabel Memori Awal** | Halaman pengaturan dengan tabel catatan memori terisi | `docs/screenshots/week6/02-memory-vault-initial-list.jpeg`  |
 |   3   | **Form & Validasi**   | Formulir tambah memori terbuka beserta validasi input | `docs/screenshots/week6/03-memory-vault-add-validation.jpeg`|
 |   4   | **Pesan Data Kosong** | Tampilan *empty state* saat semua data dikosongkan    | `docs/screenshots/week6/04-memory-vault-empty-state.jpeg`   |
+
+### Dokumentasi Week 9 (NestJS & MVC)
+
+|  No   | Materi                     | Deskripsi                                                        | Berkas Dokumentasi                                    |
+| :---: | :------------------------- | :-------------------------------------------------------------- | :--------------------------------------------------- |
+|   1   | **Tahapan & Response API** | Request dan response endpoint CRUD serta skenario error backend | `docs/screenshots/week9/Tahapan dan Response API.pdf` |
