@@ -32,6 +32,11 @@ aira/
 ├── docs/                      # Weekly course documentation and screenshots
 ├── README.md                  # Documentation in Indonesian
 ├── README.en.md               # Documentation in English
+├── backend/                   # NestJS Project (MVC & REST API)
+│   ├── src/
+│   │   ├── main.ts            # Application bootstrap, CORS & ValidationPipe
+│   │   └── memories/          # Memory CRUD resource
+│   └── test-api.http          # REST Client request collection
 └── frontend/                  # React Vite Project
     ├── .env.example           # Environment variable template
     ├── index.html             # Main HTML entry document
@@ -101,6 +106,17 @@ In full compliance with the Week 7 assignment specifications:
 
 ---
 
+### Week 9 — NestJS Fundamentals & MVC Structure
+Implemented according to the Week 9 practical assignment:
+- **NestJS Backend**: Added a separate backend application in `backend/`, running at `http://localhost:3001`.
+- **Main Resource**: Manages the **Memory Note** entity with `id`, `category`, `factText`, `importance`, `isActive`, and `createdAt` fields.
+- **MVC Structure**: Separates `MemoriesController`, `MemoriesService`, Entity, and DTO inside the `memories` module.
+- **CRUD Operations**: Provides `GET`, `POST`, `PATCH`, and `DELETE` endpoints under `/memories`, using an in-memory array as temporary storage.
+- **DTO Validation**: Uses `class-validator` for category, fact content, text length, numeric type, and priority range validation from 1 to 5.
+- **Error Handling**: Uses `NotFoundException` for missing IDs and `ConflictException` for duplicate memory facts.
+- **Frontend Integration**: The React frontend uses `fetch()` for a complete create, read, update, and delete memory flow.
+- **REST Client Testing**: Provides endpoint requests and error scenarios in `backend/test-api.http` before frontend integration.
+
 ## Documentation & Screenshots
 
 ### Week 7 Screenshots (Ajax & API Consumption)
@@ -119,3 +135,9 @@ In full compliance with the Week 7 assignment specifications:
 |   2   | **Initial Vault List** | Settings page displaying active memory records    | `docs/screenshots/week6/02-memory-vault-initial-list.jpeg`  |
 |   3   | **Form & Validation**  | Memory creation form with inline field validation | `docs/screenshots/week6/03-memory-vault-add-validation.jpeg`|
 |   4   | **Empty State**        | Fallback message displayed when vault has no data | `docs/screenshots/week6/04-memory-vault-empty-state.jpeg`   |
+
+### Week 9 Documentation (NestJS & MVC)
+
+|  No   | Topic                     | Description                                                       | Documentation File                                   |
+| :---: | :------------------------ | :--------------------------------------------------------------- | :--------------------------------------------------- |
+|   1   | **API Steps & Responses** | CRUD endpoint requests and responses, including error scenarios | `docs/screenshots/week9/Tahapan dan Response API.pdf` |
