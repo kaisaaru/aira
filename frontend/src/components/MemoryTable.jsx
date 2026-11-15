@@ -3,7 +3,9 @@ import MemoryRow from "./MemoryRow";
 export default function MemoryTable({
   memories,
   filteredMemories,
+  isLoading = false,
   onDeleteRequest,
+  onEditRequest,
 }) {
   return (
     <div className="table-responsive">
@@ -18,7 +20,21 @@ export default function MemoryTable({
           </tr>
         </thead>
         <tbody id="memory-table-body">
-          {memories.length === 0 ? (
+          {isLoading && memories.length === 0 ? (
+            <tr>
+              <td
+                colSpan="5"
+                style={{
+                  textAlign: "center",
+                  color: "#38bdf8",
+                  padding: "24px",
+                  fontSize: "0.88rem",
+                }}
+              >
+                Memuat data memori dari backend NestJS...
+              </td>
+            </tr>
+          ) : memories.length === 0 ? (
             <tr>
               <td
                 colSpan="5"
@@ -52,6 +68,7 @@ export default function MemoryTable({
                 key={item.id}
                 memory={item}
                 onDeleteRequest={onDeleteRequest}
+                onEditRequest={onEditRequest}
               />
             ))
           )}

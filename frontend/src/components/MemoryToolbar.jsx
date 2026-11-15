@@ -5,9 +5,11 @@ export default function MemoryToolbar({
 }) {
   const stats = {
     total: memories.length,
-    utama: memories.filter((m) => m.priority === "Utama").length,
-    penting: memories.filter((m) => m.priority === "Penting").length,
-    sedang: memories.filter((m) => m.priority === "Sedang").length,
+    utama: memories.filter((m) => m.importance >= 5 || m.priority === "Utama").length,
+    penting: memories.filter((m) => m.importance === 4 || m.priority === "Penting").length,
+    sedang: memories.filter(
+      (m) => (m.importance !== undefined && m.importance <= 3) || m.priority === "Sedang",
+    ).length,
   };
 
   return (
@@ -30,9 +32,10 @@ export default function MemoryToolbar({
           onChange={(e) => onCategoryChange(e.target.value)}
         >
           <option value="all">Semua Kategori</option>
-          <option value="Identitas">Identitas &amp; Profil</option>
-          <option value="Minat">Hobi &amp; Minat</option>
-          <option value="Kuliah">Aktivitas Kuliah</option>
+          <option value="identity">Identitas &amp; Profil</option>
+          <option value="hobby">Hobi &amp; Minat</option>
+          <option value="study">Aktivitas Kuliah</option>
+          <option value="preference">Preferensi Personal</option>
         </select>
       </div>
     </div>
