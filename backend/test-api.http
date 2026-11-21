@@ -1,35 +1,63 @@
 @baseUrl = http://localhost:3001/memories
 
-### GET
+### 1. GET semua memori
 GET {{baseUrl}} HTTP/1.1
 
-### POST
+### 2. POST tambah memori 1 (Identitas)
+POST {{baseUrl}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "category": "identity",
+  "factText": "Nama panggilan pengguna adalah Kaisar.",
+  "importance": 5,
+  "isActive": true
+}
+
+### 3. POST tambah memori 2 (Kuliah)
 POST {{baseUrl}} HTTP/1.1
 Content-Type: application/json
 
 {
   "category": "study",
-  "factText": "Pengguna sedang mengerjakan tugas backend NestJS MVC",
+  "factText": "Pengguna sedang mengerjakan tugas 10 NestJS PostgreSQL dan Prisma ORM.",
   "importance": 5,
   "isActive": true
 }
 
-### GET ID
+### 4. POST tambah memori 3 (Hobi)
+POST {{baseUrl}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "category": "hobby",
+  "factText": "Pengguna menyukai anime Detective Conan.",
+  "importance": 3,
+  "isActive": true
+}
+
+### 5. GET memori berdasarkan ID
 GET {{baseUrl}}/MEM-01 HTTP/1.1
 
-### PATCH
+### 6. PATCH ubah memori
 PATCH {{baseUrl}}/MEM-01 HTTP/1.1
 Content-Type: application/json
 
 {
   "importance": 4,
-  "factText": "Nama panggilan pengguna adalah Kaisar (Updated)"
+  "factText": "Nama panggilan pengguna adalah Kaisar (Updated di PostgreSQL)"
 }
 
-### DELETE ID
-DELETE {{baseUrl}}/MEM-02 HTTP/1.1
+### 7. GET statistik & filter lanjutan (Nilai Tambah - Poin 6)
+GET {{baseUrl}}/stats HTTP/1.1
 
-### ERROR SCENARIO 1
+### 8. GET statistik dengan filter kategori & prioritas (where + count)
+GET {{baseUrl}}/stats?category=study&minImportance=4 HTTP/1.1
+
+### 9. DELETE memori berdasarkan ID
+DELETE {{baseUrl}}/MEM-03 HTTP/1.1
+
+### 10. ERROR SCENARIO 1: Validasi DTO (400 Bad Request)
 POST {{baseUrl}} HTTP/1.1
 Content-Type: application/json
 
@@ -39,15 +67,15 @@ Content-Type: application/json
   "importance": 99
 }
 
-### ERROR SCENARIO 2
+### 11. ERROR SCENARIO 2: ID tidak ditemukan (404 Not Found)
 GET {{baseUrl}}/MEM-999 HTTP/1.1
 
-### ERROR SCENARIO 3
+### 12. ERROR SCENARIO 3: Duplikat fakta (409 Conflict)
 POST {{baseUrl}} HTTP/1.1
 Content-Type: application/json
 
 {
-  "category": "identity",
-  "factText": "Nama panggilan pengguna adalah Kaisar.",
+  "category": "study",
+  "factText": "Pengguna sedang mengerjakan tugas 10 NestJS PostgreSQL dan Prisma ORM.",
   "importance": 5
 }
