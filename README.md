@@ -1,4 +1,4 @@
-# AIRA — AI Virtual Companion
+# AIRA - AI Virtual Companion
 
 **Pilih Bahasa / Language:** **Bahasa Indonesia** • [English](README.en.md)
 
@@ -8,17 +8,20 @@ Aplikasi pendamping virtual AI berbasis web untuk praktikum mata kuliah **Pemrog
 
 ## Cara Menjalankan Proyek
 
-Pastikan [Node.js](https://nodejs.org/) (versi 18+) telah terpasang.
+Pastikan [Node.js](https://nodejs.org/) (versi 18+) dan **PostgreSQL** telah terpasang.
 
 ```bash
-# Masuk ke direktori frontend
-cd frontend
-
-# Pasang dependensi
+# 1. Jalankan Backend (NestJS + Prisma + PostgreSQL)
+cd backend
+cp .env.example .env      # Sesuaikan DATABASE_URL bila perlu
 npm install
+npx prisma migrate dev    # Jalankan migrasi tabel ke PostgreSQL
+npm run start:dev         # Berjalan di http://localhost:3001
 
-# Jalankan server pengembangan
-npm run dev
+# 2. Jalankan Frontend (React + Vite) di terminal terpisah
+cd frontend
+npm install
+npm run dev               # Berjalan di http://localhost:5173
 ```
 
 Buka peramban di `http://localhost:5173/`.
@@ -32,10 +35,15 @@ aira/
 ├── docs/                      # Dokumentasi & tangkapan layar tugas per pekan
 ├── README.md                  # Dokumentasi bahasa Indonesia
 ├── README.en.md               # Dokumentasi bahasa Inggris
-├── backend/                   # Proyek NestJS (MVC & REST API)
+├── backend/                   # Proyek NestJS (MVC, REST API & Prisma ORM)
+│   ├── .env.example           # Template koneksi PostgreSQL (DATABASE_URL)
+│   ├── prisma/
+│   │   ├── schema.prisma      # Skema model database (Memory)
+│   │   └── migrations/        # Riwayat migrasi PostgreSQL
 │   ├── src/
 │   │   ├── main.ts            # Bootstrap aplikasi, CORS & ValidationPipe
-│   │   └── memories/          # Resource CRUD Catatan Memori
+│   │   ├── prisma/            # PrismaService & PrismaModule (provider global)
+│   │   └── memories/          # Resource CRUD & statistik Catatan Memori
 │   └── test-api.http          # Koleksi request REST Client
 └── frontend/                  # Proyek React (Vite)
     ├── .env.example           # Template environment variable
@@ -62,23 +70,23 @@ aira/
 
 ## Perkembangan Tugas Mingguan
 
-### Week 2 — HTML Semantik
+### Week 2: HTML Semantik
 - Membangun kerangka semantik HTML5 (`<header>`, `<nav>`, `<main>`, `<section>`, `<aside>`).
 - Menyusun formulir dengan pasangan `<label>` dan `<input>` yang valid serta tabel data berstruktur `<thead>`/`<tbody>`.
 
-### Week 3 — CSS Murni & Responsif
+### Week 3: CSS Murni & Responsif
 - Menerapkan palet warna *dark-teal companion* (`style.css`) terinspirasi Project AIRI.
 - Tata letak responsif untuk desktop dan perangkat bergerak (*mobile*).
 
-### Week 4 — Tailwind CSS
+### Week 4: Tailwind CSS
 - Mengintegrasikan utilitas Tailwind CSS untuk kerangka tampilan yang konsisten dan modular.
 - Mempersiapkan transisi elemen antarmuka menuju komponen React.
 
-### Week 5 — Logika JS DOM & Animasi jQuery
+### Week 5: Logika JS DOM & Animasi jQuery
 - Pengolahan data memori lokal menggunakan array of objects dan kamus respon percakapan.
 - Animasi form input (`slideToggle`), pemfilteran kategori, modal dialog hapus, dan notifikasi mengambang.
 
-### Week 6 — Dasar React (Vite & State Management)
+### Week 6: Dasar React (Vite & State Management)
 Sesuai dengan ketentuan modul tugas praktikum Week 6:
 - **Inisialisasi Proyek**: Migrasi frontend ke **React Vite** menggunakan JavaScript murni JSX (`.jsx`, tanpa TypeScript).
 - **Entitas Utama**: Pengelolaan data **Catatan Memori** (*Memory Vault*) dengan atribut `id`, `category`, `fact`, dan `priority`.
@@ -90,7 +98,7 @@ Sesuai dengan ketentuan modul tugas praktikum Week 6:
   - *Conditional rendering*: Menampilkan pesan wajib *"Belum ada data catatan memori. Tambahkan catatan baru melalui formulir di atas."* saat data kosong.
   - Sistem notifikasi toast bertumpuk (*stacked toasts*) dengan animasi bilah durasi dan warna aksen aksi (**Biru** untuk simpan, **Merah** untuk hapus).
 
-### Week 7 — Ajax & Konsumsi API Eksternal / Mock
+### Week 7: Ajax & Konsumsi API Eksternal / Mock
 Sesuai dengan spesifikasi tugas praktikum Week 7:
 - **Pemilihan Endpoint API**: Mengonsumsi REST API publik `https://dummyjson.com/quotes?limit=4`. Dipilih karena relevan dengan tema asisten AI (wawasan harian & inspirasi dialog), gratis, mendukung CORS dari peramban, serta tidak memerlukan autentikasi API key rumit.
 - **Pola State & Penanganan Kode**:
@@ -104,7 +112,7 @@ Sesuai dengan spesifikasi tugas praktikum Week 7:
   - Panel pengujian (*testing actions*): Tombol *Uji Simulasi Error API* dan *Reset Endpoint Normal* untuk mempermudah demonstrasi dan tangkapan layar tugas.
 - **Environment Variables**: Menyediakan `frontend/.env.example` dan pembacaan `import.meta.env.VITE_QUOTES_API_URL` dengan fallback aman ke URL default.
 
-### Week 9 — NestJS Dasar & Struktur MVC
+### Week 9: NestJS Dasar & Struktur MVC
 Sesuai dengan spesifikasi tugas praktikum Week 9:
 - **Backend NestJS**: Menambahkan aplikasi backend terpisah di direktori `backend/` yang berjalan pada `http://localhost:3001`.
 - **Resource Utama**: Mengelola entitas **Catatan Memori** dengan field `id`, `category`, `factText`, `importance`, `isActive`, dan `createdAt`.
@@ -115,9 +123,37 @@ Sesuai dengan spesifikasi tugas praktikum Week 9:
 - **Integrasi Frontend**: Frontend React terhubung ke backend melalui `fetch()` untuk alur penuh tambah, baca, ubah, dan hapus catatan memori.
 - **Pengujian REST Client**: Menyediakan koleksi request dan skenario error pada `backend/test-api.http` sebelum integrasi dengan frontend.
 
+### Week 10: Implementasi REST API + PostgreSQL + ORM (Prisma)
+Sesuai dengan spesifikasi tugas praktikum Week 10:
+- **Setup PostgreSQL Lokal**: Membuat basis data lokal `aira_db` dan menghubungkannya ke backend NestJS melalui `DATABASE_URL` (`backend/.env.example`).
+- **Model Prisma (`backend/prisma/schema.prisma`)**: Merancang model utama `Memory` (`id`, `category`, `factText` unik, `importance`, `isActive`, `createdAt`, `updatedAt`).
+- **Migrasi Database**: Menjalankan `npx prisma migrate dev --name init` dan memverifikasi tabel `"Memory"` beserta `_prisma_migrations` terbentuk di PostgreSQL.
+- **Provider `PrismaService`**: Membuat `PrismaService` & `PrismaModule` global (`backend/src/prisma/`), lalu menginjeksi ke `MemoriesService` menggantikan array sementara **tanpa mengubah kode `MemoriesController`**.
+- **CRUD & Persistensi Permanen**: Seluruh operasi CRUD (`POST`, `GET`, `GET :id`, `PATCH :id`, `DELETE :id`) berjalan via Prisma Client dan data tetap bertahan setelah server backend di-restart.
+- **Endpoint Query Lanjutan (Nilai Tambah)**: Menambahkan endpoint `GET /memories/stats` (via `MemoriesStatsController`) yang menggunakan query `count`, `groupBy`, dan `where` dengan dukungan filter `?category=...&minImportance=...`.
+
 ---
 
 ## Dokumentasi Tangkapan Layar
+
+### Tangkapan Layar Week 10 (PostgreSQL + Prisma ORM)
+
+|  No   | Tahapan                         | Deskripsi                                                                      | Berkas Tangkapan Layar                                        |
+| :---: | :------------------------------ | :----------------------------------------------------------------------------- | :------------------------------------------------------------ |
+|   1   | **Setup PostgreSQL**            | Menyalakan layanan PostgreSQL & membuat database `aira_db`                     | `docs/screenshots/week10/01-postgresql-setup.png`             |
+|   2   | **Instalasi Prisma**            | Pemasangan `prisma@6` dan `@prisma/client@6` di proyek backend                 | `docs/screenshots/week10/02-prisma-install.png`               |
+|   3   | **Migrasi Awal Prisma**         | Eksekusi `npx prisma migrate dev --name init` & generate Prisma Client         | `docs/screenshots/week10/03-prisma-migrate-init.png`          |
+|   4   | **Verifikasi Tabel PostgreSQL** | Pemeriksaan tabel `"Memory"` & `_prisma_migrations` via `psql` (`\dt`, `\d`)   | `docs/screenshots/week10/04-postgresql-table-memory.png`      |
+|   5   | **CRUD: POST (`MEM-01`)**      | Menambah catatan memori pertama (`201 Created`)                                | `docs/screenshots/week10/05-post-memory-01.jpeg`              |
+|   6   | **CRUD: POST (`MEM-02`)**      | Menambah catatan memori kedua (`201 Created`)                                  | `docs/screenshots/week10/06-post-memory-02.jpeg`              |
+|   7   | **CRUD: POST (`MEM-03`)**      | Menambah catatan memori ketiga (`201 Created`)                                 | `docs/screenshots/week10/07-post-memory-03.jpeg`              |
+|   8   | **CRUD: GET All**              | Mengambil seluruh data memori dari PostgreSQL (`200 OK`)                       | `docs/screenshots/week10/08-get-all-memories.jpeg`            |
+|   9   | **CRUD: DELETE (`MEM-03`)**    | Menghapus catatan memori berdasarkan ID (`200 OK`)                             | `docs/screenshots/week10/09-delete-memory-03.jpeg`            |
+|  10   | **Query Lanjutan: Stats**      | Endpoint `GET /memories/stats` (statistik `count` & `groupBy` kategori)        | `docs/screenshots/week10/10-get-stats-all.jpeg`               |
+|  11   | **Query Lanjutan: Filter**     | Endpoint `GET /memories/stats?category=study&minImportance=4` (`where`)        | `docs/screenshots/week10/11-get-stats-filtered.jpeg`          |
+|  12   | **Persistensi Setelah Restart** | `GET /memories` setelah server NestJS di-restart membuktikan data tetap ada    | `docs/screenshots/week10/12-persistence-after-restart.jpeg`   |
+|  13   | **Tampilan UI Desktop**         | Tampilan desktop React terhubung ke NestJS Live + PostgreSQL                   | `docs/screenshots/week10/13-ui-desktop.jpeg`                  |
+|  14   | **Tampilan UI Mobile**          | Tampilan responsif mobile React terhubung ke NestJS Live + PostgreSQL          | `docs/screenshots/week10/14-ui-mobile.jpeg`                   |
 
 ### Tangkapan Layar Week 7 (Ajax & Konsumsi API)
 

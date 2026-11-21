@@ -234,7 +234,7 @@ export default function CompanionWisdom({ onSaveToMemory, showToast }) {
 
               <div className="quote-card-footer">
                 <span className="quote-author">
-                  — {item.author}
+                  - {item.author}
                 </span>
 
                 <button
