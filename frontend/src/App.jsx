@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import Navbar from "./components/Navbar";
+import AuthPanel from "./components/AuthPanel";
 import MemoryToolbar from "./components/MemoryToolbar";
 import MemoryTable from "./components/MemoryTable";
 import MemoryForm from "./components/MemoryForm";
@@ -31,8 +32,23 @@ const INITIAL_MEMORIES = [
 ];
 const API_MEMORIES_URL =
   import.meta.env.VITE_MEMORIES_API_URL || "http://localhost:3001/memories";
+const AUTH_TOKEN_KEY = "aira_jwt_token";
+const AUTH_USER_KEY = "aira_auth_user";
 
 export default function App() {
+  // State autentikasi JWT
+  const [authToken, setAuthToken] = useState(
+    () => localStorage.getItem(AUTH_TOKEN_KEY) || "",
+  );
+  const [authUser, setAuthUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem(AUTH_USER_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
   // State entitas utama: Catatan Memori dari Backend NestJS
   const [memories, setMemories] = useState(INITIAL_MEMORIES);
   const [isLoadingMemories, setIsLoadingMemories] = useState(true);
@@ -44,20 +60,57 @@ export default function App() {
   const [toasts, setToasts] = useState([]);
 
   // Handler: Tampilkan Toast Baru (Bertumpuk ke bawah, toast lama di atas)
-  const showToast = (message, type = "save") => {
+  const showToast = useCallback((message, type = "save") => {
     const id = `${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     setToasts((prev) => [...prev, { id, message, type }]);
-  };
+  }, []);
 
   const handleDismissToast = useCallback((id) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  // GET: Memuat semua data memori dari backend NestJS
+  const handleAuthSuccess = (token, user) => {
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+    setAuthToken(token);
+    setAuthUser(user);
+    showToast(`Selamat datang, ${user?.name || "Pengguna"}! JWT aktif.`, "save");
+  };
+
+  const handleLogout = useCallback(
+    (reason) => {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem(AUTH_USER_KEY);
+      setAuthToken("");
+      setAuthUser(null);
+      setMemories([]);
+      setBackendStatus("connecting");
+      showToast(
+        typeof reason === "string" ? reason : "Anda telah keluar dari sesi AIRA.",
+        "delete",
+      );
+    },
+    [showToast],
+  );
+
+  // GET: Memuat semua data memori dari backend NestJS (dengan Bearer token)
   const fetchMemories = useCallback(async () => {
+    if (!authToken) {
+      setIsLoadingMemories(false);
+      return;
+    }
+
     try {
       setIsLoadingMemories(true);
-      const res = await fetch(API_MEMORIES_URL);
+      const res = await fetch(API_MEMORIES_URL, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      if (res.status === 401) {
+        handleLogout("Sesi JWT berakhir atau tidak valid. Silakan masuk kembali.");
+        return;
+      }
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}: Gagal memuat data dari server NestJS.`);
       }
@@ -77,7 +130,7 @@ export default function App() {
     } finally {
       setIsLoadingMemories(false);
     }
-  }, []);
+  }, [authToken, handleLogout]);
 
   useEffect(() => {
     fetchMemories();
@@ -105,9 +158,17 @@ export default function App() {
     try {
       const res = await fetch(API_MEMORIES_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
         body: JSON.stringify({ category, factText, importance }),
       });
+
+      if (res.status === 401) {
+        handleLogout("Sesi JWT berakhir atau tidak valid. Silakan masuk kembali.");
+        return;
+      }
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -132,9 +193,17 @@ export default function App() {
     try {
       const res = await fetch(`${API_MEMORIES_URL}/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
         body: JSON.stringify(updatedFields),
       });
+
+      if (res.status === 401) {
+        handleLogout("Sesi JWT berakhir atau tidak valid. Silakan masuk kembali.");
+        return;
+      }
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -172,7 +241,15 @@ export default function App() {
     try {
       const res = await fetch(`${API_MEMORIES_URL}/${target}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
       });
+
+      if (res.status === 401) {
+        handleLogout("Sesi JWT berakhir atau tidak valid. Silakan masuk kembali.");
+        return;
+      }
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -221,6 +298,16 @@ export default function App() {
     }
     return cat === target;
   });
+  if (!authToken) {
+    return (
+      <div>
+        <ToastContainer toasts={toasts} onDismiss={handleDismissToast} />
+        <Navbar />
+        <AuthPanel onAuthSuccess={handleAuthSuccess} showToast={showToast} />
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Floating Stacked Toast Notifications (Identik Week 5 & Bertumpuk) */}
@@ -313,7 +400,7 @@ export default function App() {
         </div>
       )}
       {/* Komponen 1: Navbar (Sticky di Atas) */}
-      <Navbar />
+      <Navbar authUser={authUser} onLogout={() => handleLogout()} />
 
       {/* Konten Utama Halaman Pengaturan (100% Identik Week 5 settings.html) */}
       <main className="settings-container max-w-4xl mx-auto flex flex-col gap-6">

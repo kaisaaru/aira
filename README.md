@@ -35,15 +35,16 @@ aira/
 ├── docs/                      # Dokumentasi & tangkapan layar tugas per pekan
 ├── README.md                  # Dokumentasi bahasa Indonesia
 ├── README.en.md               # Dokumentasi bahasa Inggris
-├── backend/                   # Proyek NestJS (MVC, REST API & Prisma ORM)
-│   ├── .env.example           # Template koneksi PostgreSQL (DATABASE_URL)
+├── backend/                   # Proyek NestJS (MVC, REST API, Prisma & JWT Auth)
+│   ├── .env.example           # Template DATABASE_URL & JWT_SECRET
 │   ├── prisma/
-│   │   ├── schema.prisma      # Skema model database (Memory)
+│   │   ├── schema.prisma      # Skema model database (Memory & User)
 │   │   └── migrations/        # Riwayat migrasi PostgreSQL
 │   ├── src/
-│   │   ├── main.ts            # Bootstrap aplikasi, CORS & ValidationPipe
+│   │   ├── main.ts            # Bootstrap aplikasi, helmet, CORS & ValidationPipe
 │   │   ├── prisma/            # PrismaService & PrismaModule (provider global)
-│   │   └── memories/          # Resource CRUD & statistik Catatan Memori
+│   │   ├── auth/              # Registrasi, login bcrypt, JWT, Guard & rate limit
+│   │   └── memories/          # Resource CRUD & statistik Catatan Memori (privat)
 │   └── test-api.http          # Koleksi request REST Client
 └── frontend/                  # Proyek React (Vite)
     ├── .env.example           # Template environment variable
@@ -53,11 +54,12 @@ aira/
     ├── public/                # Gambar avatar & model visual
     └── src/
         ├── main.jsx           # Entry point React
-        ├── App.jsx            # State utama & perakitan halaman
+        ├── App.jsx            # State utama, sesi JWT & perakitan halaman
         ├── style.css          # Desain sistem otentik AIRI (Week 5 & 7)
         ├── tailwind.css       # Utilitas styling
-        └── components/        # 7 Komponen Modular React:
-            ├── Navbar.jsx           # Navigasi sticky di bagian atas
+        └── components/        # 8 Komponen Modular React:
+            ├── Navbar.jsx           # Navigasi sticky, status user & tombol keluar
+            ├── AuthPanel.jsx        # Formulir Masuk & Daftar akun (JWT Auth)
             ├── MemoryToolbar.jsx    # Ringkasan statistik & filter kategori
             ├── MemoryTable.jsx      # Tabel data & conditional rendering
             ├── MemoryRow.jsx        # Baris catatan memori
@@ -132,9 +134,32 @@ Sesuai dengan spesifikasi tugas praktikum Week 10:
 - **CRUD & Persistensi Permanen**: Seluruh operasi CRUD (`POST`, `GET`, `GET :id`, `PATCH :id`, `DELETE :id`) berjalan via Prisma Client dan data tetap bertahan setelah server backend di-restart.
 - **Endpoint Query Lanjutan (Nilai Tambah)**: Menambahkan endpoint `GET /memories/stats` (via `MemoriesStatsController`) yang menggunakan query `count`, `groupBy`, dan `where` dengan dukungan filter `?category=...&minImportance=...`.
 
+### Week 11: JWT Auth + Keamanan Dasar
+Sesuai dengan spesifikasi tugas praktikum Week 11:
+- **Registrasi & Login dengan `bcrypt`**: Menambahkan model `User` (`@@map("users")`) di `backend/prisma/schema.prisma` serta endpoint `POST /auth/register` dan `POST /auth/login` di `AuthModule` dengan hashing password menggunakan `bcrypt` (10 salt rounds).
+- **JWT & Header `Authorization: Bearer`**: Login yang berhasil menerbitkan `accessToken` JWT via `@nestjs/jwt`. Frontend React (`AuthPanel.jsx` & `App.jsx`) menyimpan token dan melampirkan header `Authorization: Bearer <token>` pada seluruh operasi CRUD `/memories`.
+- **Proteksi Endpoint Privat (`JwtAuthGuard`)**: Memasang `@UseGuards(JwtAuthGuard)` pada `MemoriesController`, `MemoriesStatsController`, dan `GET /auth/me` sehingga request tanpa token atau token tidak valid ditolak dengan `401 Unauthorized`.
+- **Keamanan Dasar Tambahan**:
+  - **Security Headers (`helmet`)**: Dipasang di `backend/src/main.ts` untuk menambahkan header `Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, dan `Strict-Transport-Security`.
+  - **Rate Limiting (`@nestjs/throttler`)**: Dipasang pada `POST /auth/login` (maksimal 5 percobaan per menit) untuk menahan brute-force dan mengembalikan `429 Too Many Requests` saat batas terlampaui.
+- **Mitigasi Ancaman (SQL Injection & XSS)**:
+  - **SQL Injection**: Seluruh akses database menggunakan Prisma Client (parameterized query) serta validasi DTO ketat (`ValidationPipe` dengan `whitelist` dan `forbidNonWhitelisted`).
+  - **XSS**: React melakukan auto-escaping pada seluruh konten JSX tanpa `dangerouslySetInnerHTML`, diperkuat dengan header `Content-Security-Policy` dan `X-Content-Type-Options` dari `helmet`.
+
 ---
 
 ## Dokumentasi Tangkapan Layar
+
+### Tangkapan Layar Week 11 (JWT Auth & Keamanan Dasar)
+
+|  No   | Tahapan                           | Deskripsi                                                                       | Berkas Tangkapan Layar                                    |
+| :---: | :-------------------------------- | :------------------------------------------------------------------------------ | :-------------------------------------------------------- |
+|   1   | **Login & JWT `accessToken`**     | Response `POST /auth/login` berisi `accessToken`, header rate limit, & `helmet` | `docs/screenshots/week11/01-login-access-token.jpeg`      |
+|   2   | **Proteksi Endpoint (`401`)**     | Request `GET /memories` tanpa token ditolak dengan `401 Unauthorized`           | `docs/screenshots/week11/02-unauthorized-401.jpeg`        |
+|   3   | **Rate Limiting (`429`) & Helmet**| Percobaan login berlebih ditolak `429 Too Many Requests` + security headers     | `docs/screenshots/week11/03-rate-limit-429-helmet.jpeg`   |
+|   4   | **Hash Password (`bcrypt`)**      | Isi tabel `users` di PostgreSQL menunjukkan password ter-hash (`$2b$10$...`)    | `docs/screenshots/week11/04-db-users-bcrypt.jpeg`         |
+|   5   | **UI Login JWT**                  | Tampilan halaman login React (`AuthPanel`) sebelum masuk ke Catatan Memori      | `docs/screenshots/week11/05-ui-login.jpeg`                |
+|   6   | **Header `Authorization: Bearer`**| Tab Network browser menampilkan `Authorization: Bearer ...` ke `/memories`      | `docs/screenshots/week11/06-network-bearer-token.jpeg`    |
 
 ### Tangkapan Layar Week 10 (PostgreSQL + Prisma ORM)
 
