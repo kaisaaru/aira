@@ -1,7 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { MemoriesService } from './memories.service.js';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 
 @Controller('memories')
+@UseGuards(JwtAuthGuard)
 export class MemoriesStatsController {
   constructor(private readonly memoriesService: MemoriesService) {}
 

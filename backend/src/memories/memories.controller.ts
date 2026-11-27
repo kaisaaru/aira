@@ -1,10 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from
-  '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { MemoriesService } from './memories.service.js';
 import { CreateMemoryDto } from './dto/create-memory.dto.js';
 import { UpdateMemoryDto } from './dto/update-memory.dto.js';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 
 @Controller('memories')
+@UseGuards(JwtAuthGuard)
 export class MemoriesController {
   // Dependency Injection melalui constructor
   constructor(private readonly memoriesService: MemoriesService) { }
