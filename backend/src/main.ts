@@ -1,11 +1,16 @@
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 import { AppModule } from './app.module.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Aktifkan CORS agar frontend bisa fetch data
+  // Pasang security headers HTTP menggunakan helmet
+  app.use(helmet());
+
+  // Aktifkan CORS agar frontend bisa fetch data beserta header Authorization
   app.enableCors();
 
   // Aktifkan validasi DTO secara global
@@ -20,4 +25,4 @@ async function bootstrap() {
   await app.listen(3001);
   console.log('Backend AIRA berjalan di: http://localhost:3001');
 }
-bootstrap();
+void bootstrap();
