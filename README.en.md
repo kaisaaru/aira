@@ -35,15 +35,16 @@ aira/
 ├── docs/                      # Weekly course documentation and screenshots
 ├── README.md                  # Documentation in Indonesian
 ├── README.en.md               # Documentation in English
-├── backend/                   # NestJS Project (MVC, REST API & Prisma ORM)
-│   ├── .env.example           # PostgreSQL connection template (DATABASE_URL)
+├── backend/                   # NestJS Project (MVC, REST API, Prisma & JWT Auth)
+│   ├── .env.example           # DATABASE_URL & JWT_SECRET template
 │   ├── prisma/
-│   │   ├── schema.prisma      # Database schema model (Memory)
+│   │   ├── schema.prisma      # Database schema models (Memory & User)
 │   │   └── migrations/        # PostgreSQL migration history
 │   ├── src/
-│   │   ├── main.ts            # Application bootstrap, CORS & ValidationPipe
+│   │   ├── main.ts            # Application bootstrap, helmet, CORS & ValidationPipe
 │   │   ├── prisma/            # PrismaService & PrismaModule (global provider)
-│   │   └── memories/          # Memory CRUD & stats resource
+│   │   ├── auth/              # Register, bcrypt login, JWT, Guard & rate limit
+│   │   └── memories/          # Protected Memory CRUD & stats resource
 │   └── test-api.http          # REST Client request collection
 └── frontend/                  # React Vite Project
     ├── .env.example           # Environment variable template
@@ -53,11 +54,12 @@ aira/
     ├── public/                # Static assets (avatars, VRM models)
     └── src/
         ├── main.jsx           # React root renderer
-        ├── App.jsx            # Main state container & settings view
+        ├── App.jsx            # Main state container, JWT session & settings view
         ├── style.css          # Authentic AIRI design system (Week 5 & 7)
         ├── tailwind.css       # Utility styles
-        └── components/        # 7 Modular React Components:
-            ├── Navbar.jsx           # Sticky top navigation bar
+        └── components/        # 8 Modular React Components:
+            ├── Navbar.jsx           # Sticky top bar, user badge & logout action
+            ├── AuthPanel.jsx        # Login & Register form (JWT Auth)
             ├── MemoryToolbar.jsx    # Stats summary & category filter
             ├── MemoryTable.jsx      # Tabular data & conditional rendering
             ├── MemoryRow.jsx        # Individual memory entry row
@@ -134,7 +136,30 @@ Implemented according to the Week 10 practical assignment:
 - **Persistent CRUD**: All CRUD endpoints (`POST`, `GET`, `GET :id`, `PATCH :id`, `DELETE :id`) run on Prisma Client and persist data across server restarts.
 - **Advanced Query Endpoint (Bonus)**: Added `GET /memories/stats` (via `MemoriesStatsController`) using `count`, `groupBy`, and `where` with optional `?category=...&minImportance=...` filters.
 
+### Week 11: JWT Auth + Basic Security
+Implemented according to the Week 11 practical assignment:
+- **Registration & Login with `bcrypt`**: Added the `User` model (`@@map("users")`) in `backend/prisma/schema.prisma` along with `POST /auth/register` and `POST /auth/login` in `AuthModule`, hashing passwords with `bcrypt` (10 salt rounds).
+- **JWT & `Authorization: Bearer` Header**: Successful logins issue a signed JWT `accessToken` via `@nestjs/jwt`. The React frontend (`AuthPanel.jsx` & `App.jsx`) stores the token and sends `Authorization: Bearer <token>` on every `/memories` CRUD request.
+- **Protected Private Endpoints (`JwtAuthGuard`)**: Applied `@UseGuards(JwtAuthGuard)` to `MemoriesController`, `MemoriesStatsController`, and `GET /auth/me`, returning `401 Unauthorized` when tokens are missing or invalid.
+- **Basic Security Hardening**:
+  - **Security Headers (`helmet`)**: Enabled in `backend/src/main.ts` (`Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Strict-Transport-Security`).
+  - **Rate Limiting (`@nestjs/throttler`)**: Applied to `POST /auth/login` (5 requests per minute) to mitigate brute-force attacks and return `429 Too Many Requests`.
+- **Threat Mitigation (SQL Injection & XSS)**:
+  - **SQL Injection**: All queries go through Prisma Client parameterized queries paired with strict DTO validation (`ValidationPipe` with `whitelist` and `forbidNonWhitelisted`).
+  - **XSS**: React automatically escapes JSX output without `dangerouslySetInnerHTML`, reinforced by `helmet` security headers.
+
 ## Documentation & Screenshots
+
+### Week 11 Screenshots (JWT Auth & Basic Security)
+
+|  No   | Stage                            | Description                                                                   | Screenshot Path                                           |
+| :---: | :------------------------------- | :---------------------------------------------------------------------------- | :-------------------------------------------------------- |
+|   1   | **Login & JWT `accessToken`**    | `POST /auth/login` response with `accessToken`, rate limit & `helmet` headers | `docs/screenshots/week11/01-login-access-token.jpeg`      |
+|   2   | **Protected Endpoint (`401`)**   | `GET /memories` without token rejected with `401 Unauthorized`                | `docs/screenshots/week11/02-unauthorized-401.jpeg`        |
+|   3   | **Rate Limit (`429`) & Helmet**  | Repeated login attempts blocked with `429 Too Many Requests` + helmet headers | `docs/screenshots/week11/03-rate-limit-429-helmet.jpeg`   |
+|   4   | **Hashed Password (`bcrypt`)**   | PostgreSQL `users` table showing `$2b$10$...` bcrypt password hash            | `docs/screenshots/week11/04-db-users-bcrypt.jpeg`         |
+|   5   | **JWT Login UI**                 | React login screen (`AuthPanel`) before accessing Memory Vault                | `docs/screenshots/week11/05-ui-login.jpeg`                |
+|   6   | **`Authorization: Bearer` Header**| Browser Network tab showing `Authorization: Bearer ...` on `/memories`        | `docs/screenshots/week11/06-network-bearer-token.jpeg`    |
 
 ### Week 10 Screenshots (PostgreSQL + Prisma ORM)
 
